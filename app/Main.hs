@@ -1,5 +1,3 @@
-{-# LANGUAGE ExtendedDefaultRules #-}
-
 module Main where
 
 import Tldr
