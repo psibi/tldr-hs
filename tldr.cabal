@@ -1,13 +1,13 @@
 name:                tldr
 version:             0.1.0.0
--- synopsis:
+synopsis:            Haskell tldr client
 -- description:
-homepage:            https://github.com/githubuser/tldr#readme
+homepage:            https://github.com/psibi/tldr-hs#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2017 Author name here
+author:              Sibi
+maintainer:          sibi@psibi.in
+copyright:           2017 Sibi
 category:            Web
 build-type:          Simple
 extra-source-files:  README.md
@@ -46,4 +46,4 @@ test-suite tldr-test
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/tldr
+  location: https://github.com/psibi/tldr-hs
