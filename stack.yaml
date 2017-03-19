@@ -44,8 +44,6 @@ packages:
 extra-deps: 
 - shell-conduit-4.6.1
 - cmark-0.5.5
-- process-1.2.0.0
-
 
 # Override default flag values for local packages and extra-deps
 flags: {}
