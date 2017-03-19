@@ -10,7 +10,7 @@ maintainer:          sibi@psibi.in
 copyright:           2017 Sibi
 category:            Web
 build-type:          Simple
-extra-source-files:  README.md
+extra-source-files:  README.md, CHANGELOG.md
 cabal-version:       >=1.10
 
 library
