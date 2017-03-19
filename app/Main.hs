@@ -7,10 +7,10 @@ import Control.Monad
 import System.Directory
 import System.FilePath
 import Data.Conduit.Shell hiding (info)
+import System.Environment (getArgs, withArgs)
 
 data TldrOpts = TldrOpts
   { pageName :: String
-  , updateFlag :: Bool
   } deriving (Show)
 
 tldrDirName :: String
@@ -46,24 +46,28 @@ initializeTldrPages = do
 updateTldrPages :: IO ()
 updateTldrPages = do
   homeDir <- getHomeDirectory
-  let repoDir = homeDir </> tldrDirName <> "tldr"
+  let repoDir = homeDir </> tldrDirName </> "tldr"
   run $
     do cd repoDir
        git "pull" ["origin", "master"]
 
+updateOption :: Parser (a -> a)
+updateOption = infoOption "update" (long "update" <> help "Update tldr pages")
+
 tldrParserInfo :: ParserInfo TldrOpts
 tldrParserInfo =
   info
-    (helper <*> versionOption <*> programOptions)
+    (helper <*> versionOption <*> updateOption <*> programOptions)
     (fullDesc <> progDesc "tldr Client program" <>
      header "tldr - Simplified and community-driven man pages")
   where
-    versionOption = infoOption "0.1" (long "version" <> help "Show version")
-    programOptions :: Parser TldrOpts
-    programOptions =
-      TldrOpts <$>
-      (strArgument (metavar "COMMAND" <> help "name of the command")) <*>
-      (switch (long "update" <> help "Update tldr pages"))
+    versionOption :: Parser (a -> a)
+    versionOption =
+      infoOption "0.1" (long "version" <> short 'v' <> help "Show version")
+
+programOptions :: Parser TldrOpts
+programOptions =
+  (TldrOpts <$> strArgument (metavar "COMMAND" <> help "name of the command"))
 
 pageExists :: FilePath -> IO (Maybe FilePath)
 pageExists fname = do
@@ -82,9 +86,13 @@ getPagePath page = do
 main :: IO ()
 main = do
   initializeTldrPages
-  opts <- execParser tldrParserInfo
-  when (updateFlag opts) updateTldrPages
-  fname <- getPagePath (pageName opts)
-  case fname of
-    Nothing -> putStrLn ("No tldr entry for " <> (pageName opts))
-    Just fpath -> renderPage fpath
+  args <- getArgs
+  case execParserPure (prefs noBacktrack) tldrParserInfo args of
+    Failure _
+      | null args -> withArgs ["--help"] (execParser tldrParserInfo) >> return ()
+      | args == ["--update"] -> updateTldrPages
+    parseResult -> do
+      opts <- handleParseResult parseResult
+      let page = pageName opts
+      fname <- getPagePath page
+      maybe (putStrLn ("No tldr entry for " <> page)) renderPage fname
