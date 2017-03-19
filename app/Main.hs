@@ -1,7 +1,7 @@
 module Main where
 
 import Tldr
-import Options.Applicative
+import Options.Applicative hiding ((<>))
 import Data.Semigroup ((<>))
 import Control.Monad
 import System.Directory
