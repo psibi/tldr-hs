@@ -1,3 +1,5 @@
+{-#LANGUAGE CPP#-}
+
 module Main where
 
 import Tldr
@@ -81,7 +83,15 @@ getPagePath page = do
   homeDir <- getHomeDirectory
   let pageDir = homeDir </> tldrDirName </> "tldr" </> "pages"
       x@(f1:f2:f3:[]) = map (\x -> pageDir </> x </> page <.> "md") checkDirs
+#if MIN_VERSION_base(4,7,0)
+  f1' <- pageExists f1
+  f2' <- pageExists f2
+  f3' <- pageExists f3
+  return $ f1' <|> f2' <|> f3'
+#else
   pageExists f1 <|> pageExists f2 <|> pageExists f3
+#endif
+
 
 main :: IO ()
 main = do
