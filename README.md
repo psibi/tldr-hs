@@ -1,5 +1,7 @@
 # tldr
 
+[![Build Status](https://travis-ci.org/psibi/tldr-hs.svg?branch=master)](https://travis-ci.org/psibi/tldr-hs)
+
 Haskell client for tldr
 
 ## Installation
