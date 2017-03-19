@@ -33,6 +33,7 @@ executable tldr
                      , directory
                      , filepath
                      , shell-conduit
+                     , semigroups
   default-language:    Haskell2010
 
 test-suite tldr-test
