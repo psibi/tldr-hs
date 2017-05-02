@@ -24,7 +24,6 @@ data ConsoleSetting = ConsoleSetting
   , fgIntensity :: ColorIntensity
   , fgColor :: Color
   , bgIntensity :: ColorIntensity
-  , bgColor :: Color
   , consoleIntensity :: ConsoleIntensity
   }
 
@@ -37,7 +36,6 @@ defConsoleSetting =
   , fgIntensity = Dull
   , fgColor = White
   , bgIntensity = Dull
-  , bgColor = Black
   , consoleIntensity = NormalIntensity
   }
 
@@ -54,7 +52,6 @@ toSGR cons =
   , SetUnderlining (underline cons)
   , SetBlinkSpeed (blink cons)
   , SetColor Foreground (fgIntensity cons) (fgColor cons)
-  , SetColor Background (bgIntensity cons) (bgColor cons)
   ]
 
 renderNode :: NodeType -> IO ()
