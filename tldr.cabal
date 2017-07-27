@@ -1,5 +1,5 @@
 name:                tldr
-version:             0.2.0
+version:             0.2.2
 synopsis:            Haskell tldr client
 description:         Haskell tldr client with support for updating and viewing tldr pages.
 homepage:            https://github.com/psibi/tldr-hs#readme

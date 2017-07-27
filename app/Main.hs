@@ -10,6 +10,8 @@ import System.Directory
 import System.FilePath
 import Data.Conduit.Shell hiding (info)
 import System.Environment (getArgs, withArgs)
+import Paths_tldr (version)
+import Data.Version (showVersion)
 
 data TldrOpts = TldrOpts
   { pageName :: String
@@ -65,7 +67,7 @@ tldrParserInfo =
   where
     versionOption :: Parser (a -> a)
     versionOption =
-      infoOption "0.1" (long "version" <> short 'v' <> help "Show version")
+      infoOption (showVersion version) (long "version" <> short 'v' <> help "Show version")
 
 programOptions :: Parser TldrOpts
 programOptions =
