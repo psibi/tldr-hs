@@ -7,7 +7,7 @@ Haskell client for tldr
 ## Installation
 
 1. [Install stack](https://docs.haskellstack.org/en/stable/README/#how-to-install)
-2. `stack install --resolver=nightly tldr`
+2. `stack install tldr`
 
 ## Usage
 
