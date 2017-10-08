@@ -14,6 +14,7 @@ module Tldr
 import Data.Text
 import qualified Data.Text.IO as TIO
 import CMark
+import Data.List ((++))
 import System.Console.ANSI
 import Data.Monoid ((<>))
 
@@ -54,19 +55,19 @@ toSGR cons =
   , SetColor Foreground (fgIntensity cons) (fgColor cons)
   ]
 
-renderNode :: NodeType -> IO ()
-renderNode (TEXT txt) = TIO.putStrLn txt
-renderNode (HTML_BLOCK txt) = TIO.putStrLn txt
-renderNode (CODE_BLOCK _ txt) = TIO.putStrLn txt
-renderNode (HTML_INLINE txt) = TIO.putStrLn txt
-renderNode (CODE txt) = TIO.putStrLn ("   " <> txt)
-renderNode LINEBREAK = TIO.putStrLn ""
-renderNode (LIST _) = TIO.putStrLn "" >> TIO.putStr " - "
-renderNode _ = return ()
+renderNode :: NodeType -> (Maybe NodeType) -> IO ()
+renderNode (TEXT txt) ntype = case ntype of
+                                Just (HEADING _) -> TIO.putStrLn txt
+                                Just (BLOCK_QUOTE) -> TIO.putStrLn txt
+                                Just tr -> changeConsoleSetting ITEM >> TIO.putStrLn (" - " <> txt)
+                                Nothing -> TIO.putStrLn txt
+renderNode (HTML_BLOCK txt) _ = TIO.putStrLn txt
+renderNode (CODE_BLOCK _ txt) _ = changeConsoleSetting (CODE undefined) >> TIO.putStrLn ("   " <> txt) >> changeConsoleSetting ITEM
+renderNode LINEBREAK _ = TIO.putStrLn ""
+renderNode (LIST _) _ = TIO.putStrLn "" >> TIO.putStr " - "
+renderNode _ _ = return ()
 
 changeConsoleSetting :: NodeType -> IO ()
-changeConsoleSetting (HEADING _) = setSGR $ toSGR headingSetting
-changeConsoleSetting BLOCK_QUOTE = setSGR $ toSGR headingSetting
 changeConsoleSetting ITEM =
   setSGR $
   toSGR $
@@ -81,11 +82,10 @@ changeConsoleSetting (CODE _) =
   }
 changeConsoleSetting _ = return ()
 
-handleNode :: Node -> IO ()
-handleNode (Node _ ntype xs) = do
-  changeConsoleSetting ntype
-  renderNode ntype
-  mapM_ (\(Node _ ntype' ns) -> renderNode ntype' >> mapM_ handleNode ns) xs
+handleNode :: Node -> Maybe NodeType -> IO ()
+handleNode (Node _ ntype xs) mntype = do
+  renderNode ntype mntype
+  mapM_ (\(Node _ ntype' ns) -> renderNode ntype' mntype >> mapM_ (\x -> handleNode x (Just ntype')) ns) xs
 
 parsePage :: FilePath -> IO Node
 parsePage fname = do
@@ -93,7 +93,13 @@ parsePage fname = do
   let node = commonmarkToNode [] page
   return node
 
+-- This is for debugging
+printNode :: Node -> IO ()
+printNode (Node _ ntype ns) = do
+  putStrLn $ "Node type: " <> (show ntype)
+  mapM_ printNode ns
+
 renderPage :: FilePath -> IO ()
 renderPage fname = do
   node <- parsePage fname
-  handleNode node
+  handleNode node Nothing
