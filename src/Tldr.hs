@@ -86,6 +86,7 @@ handleNode (Node _ ntype xs) = do
   changeConsoleSetting ntype
   renderNode ntype
   mapM_ (\(Node _ ntype' ns) -> renderNode ntype' >> mapM_ handleNode ns) xs
+  setSGR [Reset]
 
 parsePage :: FilePath -> IO Node
 parsePage fname = do
