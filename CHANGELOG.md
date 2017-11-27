@@ -1,3 +1,7 @@
+# 0.2.3
+
+* Fix coloring bug under bash during some circumstances [#6](https://github.com/psibi/tldr-hs/pull/6/files)
+
 # 0.2.2
 
 * Fix `--version` option
