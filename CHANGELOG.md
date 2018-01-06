@@ -1,3 +1,8 @@
+# 0.2.4
+
+* Don't do cloning unnecessarily [#7](https://github.com/psibi/tldr-hs/issues/7)
+* Fix Paths_tldr warning from cabal
+
 # 0.2.3
 
 * Fix coloring bug under bash during some circumstances [#6](https://github.com/psibi/tldr-hs/pull/6/files)
