@@ -29,15 +29,15 @@ matrix:
         - alex-3.1.7
         sources:
         - hvr-ghc
-  - env: BUILD=cabal GHCVER=8.2.2 CABALVER=2.0 HAPPYVER=1.19.8 ALEXVER=3.2.3 RUN_TESTS=--run-tests
+  - env: BUILD=cabal GHCVER=8.2.2 CABALVER=2.0 HAPPYVER=1.19.5 ALEXVER=3.1.7 RUN_TESTS=--run-tests
     compiler: ": #GHC 8.2.2"
     addons:
       apt:
         packages:
         - cabal-install-2.0
         - ghc-8.2.2
-        - happy-1.19.8
-        - alex-3.2.3
+        - happy-1.19.5
+        - alex-3.1.7
         sources:
         - hvr-ghc
   - env: BUILD=stack ARGS="--resolver lts-10.2"
@@ -81,8 +81,6 @@ matrix:
   allow_failures:
   - env: BUILD=cabal GHCVER=head  CABALVER=head HAPPYVER=1.19.5 ALEXVER=3.1.7 RUN_TESTS=--run-tests
   - env: BUILD=stack ARGS="--resolver nightly"
-  - env: BUILD=stack ARGS=""
-    os: osx
 
 before_install:
 # Using compiler above sets CC to an invalid value, so unset it
