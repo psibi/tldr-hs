@@ -101,7 +101,7 @@ main = do
   args <- getArgs
   case execParserPure (prefs noBacktrack) tldrParserInfo args of
     Failure _
-      | null args -> handleParseResult . Failure $ parserFailure defaultPrefs tldrParserInfo ShowHelpText mempty
+      | null args -> withArgs ["--help"] (execParser tldrParserInfo) >> return ()
       | args == ["--update"] -> updateTldrPages
     (parseResult :: ParserResult TldrOpts) -> do
          case args of
