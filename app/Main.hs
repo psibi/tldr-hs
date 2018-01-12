@@ -100,15 +100,12 @@ main :: IO ()
 main = do
   args <- getArgs
   case execParserPure (prefs noBacktrack) tldrParserInfo args of
-    Failure _
-      | null args -> withArgs ["--help"] (execParser tldrParserInfo) >> return ()
+    failOpts@(Failure _)
       | args == ["--update"] -> updateTldrPages
-    (parseResult :: ParserResult TldrOpts) -> do
-         case args of
-           ["--help"] -> handleParseResult . Failure $ parserFailure defaultPrefs tldrParserInfo ShowHelpText mempty
-           _ -> do
-             initializeTldrPages
-             opts <- handleParseResult parseResult
-             let page = pageName opts
-             fname <- getPagePath page
-             maybe (putStrLn ("No tldr entry for " <> page)) renderPage fname
+      | otherwise -> handleParseResult failOpts >> return ()
+    Success opts -> do
+         initializeTldrPages
+         let page = pageName opts
+         fname <- getPagePath page
+         maybe (putStrLn ("No tldr entry for " <> page)) renderPage fname
+    _ -> return ()
