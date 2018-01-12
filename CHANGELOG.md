@@ -1,3 +1,7 @@
+# 0.2.5
+
+* Fix eager cloning
+
 # 0.2.4
 
 * Don't do cloning unnecessarily [#7](https://github.com/psibi/tldr-hs/issues/7)
