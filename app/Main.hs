@@ -108,4 +108,4 @@ main = do
          let page = pageName opts
          fname <- getPagePath page
          maybe (putStrLn ("No tldr entry for " <> page)) renderPage fname
-    _ -> return ()
+    compOpts@(CompletionInvoked _) -> handleParseResult compOpts >> return ()
