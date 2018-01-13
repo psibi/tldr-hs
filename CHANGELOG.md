@@ -1,3 +1,7 @@
+# Version head
+
+* Add default completion support from optparse-applicative
+
 # 0.2.5
 
 * Fix eager cloning
