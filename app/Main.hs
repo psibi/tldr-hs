@@ -9,7 +9,7 @@ import Data.Semigroup ((<>))
 import Control.Monad
 import System.Directory
 import System.FilePath
-import Data.Conduit.Shell hiding (info)
+import System.Process.Typed
 import System.Environment (getArgs, withArgs)
 import Paths_tldr (version)
 import Data.Version (showVersion)
@@ -39,22 +39,21 @@ tldrInitialized = do
 initializeTldrPages :: IO ()
 initializeTldrPages = do
   initialized <- tldrInitialized
-  if initialized
-    then return ()
-    else do
-      homeDir <- getHomeDirectory
-      run $
-        do mkdir (homeDir </> tldrDirName)
-           cd (homeDir </> tldrDirName)
-           git "clone" repoHttpsUrl
+  initialized <- tldrInitialized
+  unless initialized $ do
+    homeDir <- getHomeDirectory
+    let cloneDir = homeDir </> tldrDirName
+    runProcess_ $ proc "mkdir" [cloneDir]
+    runProcess_ $ setWorkingDir cloneDir $ proc "git" ["clone", repoHttpsUrl]
+
 
 updateTldrPages :: IO ()
 updateTldrPages = do
   homeDir <- getHomeDirectory
   let repoDir = homeDir </> tldrDirName </> "tldr"
-  run $
-    do cd repoDir
-       git "pull" ["origin", "master"]
+  repoExists <- doesDirectoryExist repoDir
+  when repoExists $ do
+    runProcess_ $ setWorkingDir repoDir $ proc "git" ["pull", "origin", "master"] 
 
 updateOption :: Parser (a -> a)
 updateOption = infoOption "update" (long "update" <> help "Update tldr pages")
