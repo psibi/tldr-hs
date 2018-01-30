@@ -33,7 +33,7 @@ executable tldr
                      , optparse-applicative
                      , directory
                      , filepath
-                     , shell-conduit >= 4.6.0
+                     , typed-process >= 0.2
                      , semigroups
   default-language:    Haskell2010
 
