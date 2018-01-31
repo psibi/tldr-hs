@@ -1,0 +1,47 @@
+# See https://github.com/harendra-kumar/packcheck for all parameters and their
+# explanation.
+environment:
+  global:
+    PACKCHECK: ./packcheck.sh
+    # The commit id of packcheck.sh to use from
+    # https://github.com/harendra-kumar/packcheck.  Used only when the script
+    # does not exist in the package repo at the path specified by "PACKCHECK"
+    PACKCHECK_COMMIT: "da9d6da3d18d6250c06617817f0879324c75c224"
+    STACKVER: "1.6.3"
+    STACK_UPGRADE: "y"
+    RESOLVER: "lts-10.0"
+    GHC_OPTIONS: "-Werror"
+    # ------------------------------------------------------------------------
+    # Normally you would not need to customize these params
+    # ------------------------------------------------------------------------
+    CABAL_REINIT_CONFIG: "y"
+    CABAL_CHECK_RELAX: "y"
+    CABAL_NO_SANDBOX: "y"
+    CABAL_HACKAGE_MIRROR: "hackage.haskell.org:http://hackage.fpcomplete.com"
+    TEST_INSTALL: "y"
+    LC_ALL: "C.UTF-8"
+    PATH: "%PATH%;%APPDATA%\\local\\bin"
+
+    STACK_ROOT: "c:\\sr"
+    LOCAL_BIN: "%APPDATA%\\local\\bin"
+
+cache:
+  - "%STACK_ROOT%"
+  - "%LOCAL_BIN%"
+  - "%APPDATA%\\cabal"
+  - "%APPDATA%\\ghc"
+# - "%LOCALAPPDATA%\\Programs\\stack"
+
+clone_folder: "c:\\pkg"
+build: off
+
+before_test:
+- if not exist %PACKCHECK% curl -sSkL -o%PACKCHECK% https://raw.githubusercontent.com/harendra-kumar/packcheck/%PACKCHECK_COMMIT%/packcheck.sh
+- if not exist %LOCAL_BIN% mkdir %LOCAL_BIN%
+- where stack.exe || curl -sSkL -ostack.zip http://www.stackage.org/stack/windows-x86_64 && 7z x stack.zip stack.exe && move stack.exe %LOCAL_BIN%
+#- stack upgrade --binary-only --binary-version %STACKVER%
+- stack --version
+
+test_script:
+- stack setup > nul
+- chcp 65001 && stack exec bash -- -c "chmod +x %PACKCHECK%; %PACKCHECK% stack"
