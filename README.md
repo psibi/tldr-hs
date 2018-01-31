@@ -1,6 +1,10 @@
 # tldr
 
-[![Build Status](https://travis-ci.org/psibi/tldr-hs.svg?branch=master)](https://travis-ci.org/psibi/tldr-hs)
+[![Linux build](https://travis-ci.org/psibi/tldr-hs.svg?branch=master)](https://travis-ci.org/psibi/tldr-hs)
+[![Window build](https://ci.appveyor.com/api/projects/status/wlqa2ndsquk1psqs/branch/master?svg=true)](https://ci.appveyor.com/project/psibi/tldr-hs/branch/master)
+[![Hackage](https://img.shields.io/hackage/v/tldr.svg)](https://hackage.haskell.org/package/tldr)
+[![Stackage Nightly](http://stackage.org/package/tldr/badge/nightly)](http://stackage.org/nightly/package/tldr)
+[![Stackage LTS](http://stackage.org/package/tldr/badge/lts)](http://stackage.org/lts/package/tldr)
 
 Haskell client for tldr
 
