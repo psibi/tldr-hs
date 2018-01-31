@@ -1,6 +1,7 @@
-# Version head
+# 0.3.0
 
 * Add default completion support from optparse-applicative
+* Add windows support. Credits to @ShrykeWindgrace.
 
 # 0.2.5
 
