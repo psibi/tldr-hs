@@ -11,6 +11,7 @@ import System.Directory
 import System.FilePath
 import System.Process.Typed
 import System.Environment (getArgs, withArgs)
+import GHC.IO.Handle.FD (stdout)
 import Paths_tldr (version)
 import Data.Version (showVersion)
 
@@ -106,5 +107,5 @@ main = do
          initializeTldrPages
          let page = pageName opts
          fname <- getPagePath page
-         maybe (putStrLn ("No tldr entry for " <> page)) renderPage fname
+         maybe (putStrLn ("No tldr entry for " <> page)) (flip renderPage stdout) fname 
     compOpts@(CompletionInvoked _) -> handleParseResult compOpts >> return ()
