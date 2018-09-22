@@ -1,6 +1,9 @@
-resolver: lts-10.0
+resolver: lts-12.10
 
 packages:
 - '.'
+
+extra-deps:
+- cmark-0.5.6
 
 
