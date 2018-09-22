@@ -1,3 +1,9 @@
+# 0.3.1
+
+* Add golden testing using tasty
+* Fix grep render [#11](https://github.com/psibi/tldr-hs/issues/11)
+* Fixes [#2](https://github.com/psibi/tldr-hs/issues/2)
+
 # 0.3.0
 
 * Add default completion support from optparse-applicative
