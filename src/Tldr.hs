@@ -12,6 +12,7 @@ module Tldr
   ) where
 
 import Data.Text
+import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import CMark
 import System.Console.ANSI
@@ -82,7 +83,25 @@ changeConsoleSetting (CODE _) =
   }
 changeConsoleSetting _ = return ()
 
+handleSubsetNodeType :: NodeType -> Text
+handleSubsetNodeType (HTML_BLOCK txt) = txt
+handleSubsetNodeType (CODE_BLOCK _ txt) = txt
+handleSubsetNodeType (TEXT txt) = txt
+handleSubsetNodeType (HTML_INLINE txt) = txt
+handleSubsetNodeType (CODE txt) = txt
+handleSubsetNodeType _ = mempty
+
+
+handleSubsetNode :: Node -> Text
+handleSubsetNode (Node _ ntype xs) = handleSubsetNodeType ntype <> (T.concat $ Prelude.map handleSubsetNode xs)
+
+handleParagraph :: [Node] -> Handle -> IO ()
+handleParagraph xs handle = TIO.hPutStrLn handle $ T.concat $ Prelude.map handleSubsetNode xs
+
+
 handleNode :: Node -> Handle -> IO ()
+handleNode (Node _ PARAGRAPH xs) handle = handleParagraph xs handle
+handleNode (Node _ ITEM xs) handle = handleParagraph xs handle
 handleNode (Node _ ntype xs) handle = do
   changeConsoleSetting ntype
   renderNode ntype handle
