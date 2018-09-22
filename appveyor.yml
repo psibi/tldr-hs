@@ -7,9 +7,9 @@ environment:
     # https://github.com/harendra-kumar/packcheck.  Used only when the script
     # does not exist in the package repo at the path specified by "PACKCHECK"
     PACKCHECK_COMMIT: "da9d6da3d18d6250c06617817f0879324c75c224"
-    STACKVER: "1.6.3"
+    STACKVER: "1.7.1"
     STACK_UPGRADE: "y"
-    RESOLVER: "lts-10.0"
+    RESOLVER: "lts-12.10"
     GHC_OPTIONS: "-Werror"
     # ------------------------------------------------------------------------
     # Normally you would not need to customize these params

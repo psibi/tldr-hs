@@ -2,6 +2,7 @@
 
 * Add proper coloring back
 * Update gitignore rule
+* Update travis and appveyor configuration
 
 # 0.3.1
 
