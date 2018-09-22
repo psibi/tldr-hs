@@ -1,3 +1,8 @@
+# 0.4.0
+
+* Add proper coloring back
+* Update gitignore rule
+
 # 0.3.1
 
 * Add golden testing using tasty
