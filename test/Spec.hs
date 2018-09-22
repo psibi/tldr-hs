@@ -14,6 +14,10 @@ renderPageToFile :: FilePath -> FilePath -> IO ()
 renderPageToFile mdfile opfile = do
   withBinaryFile opfile WriteMode (\handle -> renderPage mdfile handle)
 
+-- For adding new command, you need to add:
+-- A new ".md" file for that command
+-- A new ".golden" file for the expected output
+
 commandTest :: String -> TestTree
 commandTest str = goldenVsFile (str <> " test") (golden str) (output str) (renderPageToFile (md str) (output str))
     where
@@ -26,6 +30,8 @@ gtests :: TestTree
 gtests = testGroup "(render test)" 
          [
           commandTest "ls"
+         , commandTest "ps"
+         , commandTest "grep"
          ]
 
 main :: IO ()
