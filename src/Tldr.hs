@@ -16,6 +16,7 @@ import qualified Data.Text.IO as TIO
 import CMark
 import System.Console.ANSI
 import Data.Monoid ((<>))
+import GHC.IO.Handle (Handle)
 
 data ConsoleSetting = ConsoleSetting
   { italic :: Bool
@@ -54,15 +55,15 @@ toSGR cons =
   , SetColor Foreground (fgIntensity cons) (fgColor cons)
   ]
 
-renderNode :: NodeType -> IO ()
-renderNode (TEXT txt) = TIO.putStrLn txt
-renderNode (HTML_BLOCK txt) = TIO.putStrLn txt
-renderNode (CODE_BLOCK _ txt) = TIO.putStrLn txt
-renderNode (HTML_INLINE txt) = TIO.putStrLn txt
-renderNode (CODE txt) = TIO.putStrLn ("   " <> txt)
-renderNode LINEBREAK = TIO.putStrLn ""
-renderNode (LIST _) = TIO.putStrLn "" >> TIO.putStr " - "
-renderNode _ = return ()
+renderNode :: NodeType -> Handle -> IO ()
+renderNode (TEXT txt) handle         = TIO.hPutStrLn handle txt
+renderNode (HTML_BLOCK txt) handle   = TIO.hPutStrLn handle txt
+renderNode (CODE_BLOCK _ txt) handle = TIO.hPutStrLn handle txt
+renderNode (HTML_INLINE txt) handle  = TIO.hPutStrLn handle txt
+renderNode (CODE txt) handle         = TIO.hPutStrLn handle ("   " <> txt)
+renderNode LINEBREAK handle          = TIO.hPutStrLn handle ""
+renderNode (LIST _) handle           = TIO.hPutStrLn handle "" >> TIO.hPutStr handle " - "
+renderNode _ _                       = return ()
 
 changeConsoleSetting :: NodeType -> IO ()
 changeConsoleSetting (HEADING _) = setSGR $ toSGR headingSetting
@@ -81,11 +82,11 @@ changeConsoleSetting (CODE _) =
   }
 changeConsoleSetting _ = return ()
 
-handleNode :: Node -> IO ()
-handleNode (Node _ ntype xs) = do
+handleNode :: Node -> Handle -> IO ()
+handleNode (Node _ ntype xs) handle = do
   changeConsoleSetting ntype
-  renderNode ntype
-  mapM_ (\(Node _ ntype' ns) -> renderNode ntype' >> mapM_ handleNode ns) xs
+  renderNode ntype handle
+  mapM_ (\(Node _ ntype' ns) -> renderNode ntype' handle >> mapM_ (flip handleNode $ handle) ns) xs
   setSGR [Reset]
 
 parsePage :: FilePath -> IO Node
@@ -94,7 +95,7 @@ parsePage fname = do
   let node = commonmarkToNode [] page
   return node
 
-renderPage :: FilePath -> IO ()
-renderPage fname = do
+renderPage :: FilePath -> Handle -> IO ()
+renderPage fname handle = do
   node <- parsePage fname
-  handleNode node
+  handleNode node handle
