@@ -40,7 +40,6 @@ tldrInitialized = do
 initializeTldrPages :: IO ()
 initializeTldrPages = do
   initialized <- tldrInitialized
-  initialized <- tldrInitialized
   unless initialized $ do
     homeDir <- getHomeDirectory
     let cloneDir = homeDir </> tldrDirName
