@@ -1,3 +1,7 @@
+# 0.4.0.1
+
+* Fix double initialization bug. Credits to @Kove-W-O-Salter
+
 # 0.4.0
 
 * Add proper coloring back
