@@ -7,7 +7,7 @@ environment:
     # https://github.com/composewell/packcheck.  Used only when the script
     # does not exist in the package repo at the path specified by "PACKCHECK"
     PACKCHECK_COMMIT: "c4faad78b3292136a40a228196c3da0e3cac6e0c"
-    STACKVER: "1.7.1"
+    STACKVER: "1.9.1"
     STACK_UPGRADE: "y"
     RESOLVER: "lts-12.10"
     GHC_OPTIONS: "-Werror"
@@ -39,7 +39,7 @@ before_test:
 - if not exist %PACKCHECK% curl -sSkL -o%PACKCHECK% https://raw.githubusercontent.com/composewell/packcheck/%PACKCHECK_COMMIT%/packcheck.sh
 - if not exist %LOCAL_BIN% mkdir %LOCAL_BIN%
 - where stack.exe || curl -sSkL -ostack.zip http://www.stackage.org/stack/windows-x86_64 && 7z x stack.zip stack.exe && move stack.exe %LOCAL_BIN%
-#- stack upgrade --binary-only --binary-version %STACKVER%
+- stack upgrade --binary-only --binary-version %STACKVER%
 - stack --version
 
 test_script:
