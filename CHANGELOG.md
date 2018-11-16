@@ -1,4 +1,4 @@
-# 0.4.0.1
+# 0.4.0.2
 
 * Fix double initialization bug. Credits to @Kove-W-O-Salter
 
