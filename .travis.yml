@@ -1,12 +1,12 @@
-# See https://github.com/harendra-kumar/packcheck for all parameters and their
+# See https://github.com/composewell/packcheck for all parameters and their
 # explanation.
 env:
   global:
   - PACKCHECK="./packcheck.sh"
   # The commit id of packcheck.sh to use from
-  # https://github.com/harendra-kumar/packcheck.  Used only when the script
+  # https://github.com/composewell/packcheck.  Used only when the script
   # does not exist in the package repo at the path specified by "PACKCHECK"
-  - PACKCHECK_COMMIT="da9d6da3d18d6250c06617817f0879324c75c224"
+  - PACKCHECK_COMMIT="c4faad78b3292136a40a228196c3da0e3cac6e0c"
   - GHC_OPTIONS="-Werror"
   # ------------------------------------------------------------------------
   # Builds that need stack
@@ -134,7 +134,7 @@ script:
 
     # Get packcheck if needed
     CURL=$(which curl)
-    PACKCHECK_URL=https://raw.githubusercontent.com/harendra-kumar/packcheck/${PACKCHECK_COMMIT}/packcheck.sh
+    PACKCHECK_URL=https://raw.githubusercontent.com/composewell/packcheck/${PACKCHECK_COMMIT}/packcheck.sh
     if test ! -e "$PACKCHECK"; then $CURL -sL -o "$PACKCHECK" $PACKCHECK_URL; fi;
     chmod +x $PACKCHECK
 

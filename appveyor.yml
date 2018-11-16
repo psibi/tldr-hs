@@ -1,12 +1,12 @@
-# See https://github.com/harendra-kumar/packcheck for all parameters and their
+# See https://github.com/composewell/packcheck for all parameters and their
 # explanation.
 environment:
   global:
     PACKCHECK: ./packcheck.sh
     # The commit id of packcheck.sh to use from
-    # https://github.com/harendra-kumar/packcheck.  Used only when the script
+    # https://github.com/composewell/packcheck.  Used only when the script
     # does not exist in the package repo at the path specified by "PACKCHECK"
-    PACKCHECK_COMMIT: "da9d6da3d18d6250c06617817f0879324c75c224"
+    PACKCHECK_COMMIT: "c4faad78b3292136a40a228196c3da0e3cac6e0c"
     STACKVER: "1.7.1"
     STACK_UPGRADE: "y"
     RESOLVER: "lts-12.10"
@@ -36,7 +36,7 @@ clone_folder: "c:\\pkg"
 build: off
 
 before_test:
-- if not exist %PACKCHECK% curl -sSkL -o%PACKCHECK% https://raw.githubusercontent.com/harendra-kumar/packcheck/%PACKCHECK_COMMIT%/packcheck.sh
+- if not exist %PACKCHECK% curl -sSkL -o%PACKCHECK% https://raw.githubusercontent.com/composewell/packcheck/%PACKCHECK_COMMIT%/packcheck.sh
 - if not exist %LOCAL_BIN% mkdir %LOCAL_BIN%
 - where stack.exe || curl -sSkL -ostack.zip http://www.stackage.org/stack/windows-x86_64 && 7z x stack.zip stack.exe && move stack.exe %LOCAL_BIN%
 #- stack upgrade --binary-only --binary-version %STACKVER%
