@@ -84,7 +84,7 @@ getPagePath page = do
   homeDir <- getHomeDirectory
   let pageDir = homeDir </> tldrDirName </> "tldr" </> "pages"
       paths = map (\x -> pageDir </> x </> page <.> "md") checkDirs
-  foldr (<|>) Nothing <$> mapM pageExists paths
+  foldr1 (<|>) <$> mapM pageExists paths
 
 main :: IO ()
 main = do
