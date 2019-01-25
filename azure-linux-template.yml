@@ -26,7 +26,7 @@ jobs:
         BUILD: pedantic
         STACK_YAML: stack.yaml
     maxParallel: 5
-ex  steps:
+  steps:
   - script: |
       export STACK_ROOT="$(Build.SourcesDirectory)"/.stack-root;
       mkdir -p ~/.local/bin
