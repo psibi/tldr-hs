@@ -1,0 +1,104 @@
+jobs:
+- job: ${{ parameters.name }}
+  timeoutInMinutes: 120
+  variables:
+  - group: AWS_Keys
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  strategy:
+    matrix:
+      stack-def:
+        BUILD: stack
+        STACK_YAML: stack.yaml
+      stack-lts-13:
+        BUILD: stack
+        STACK_YAML: stack-lts-13.yaml
+      cabal:
+        BUILD: cabal
+        GHCVER: 8.6.3
+        CABALVER: 2.4
+      nightly:
+        BUILD: stack
+        STACK_YAML: stack-nightly.yaml
+      style:
+        BUILD: style
+      pedantic:
+        BUILD: pedantic
+        STACK_YAML: stack.yaml
+    maxParallel: 5
+ex  steps:
+  - script: |
+      export STACK_ROOT="$(Build.SourcesDirectory)"/.stack-root;
+      mkdir -p ~/.local/bin
+      curl -L https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+      case "$BUILD" in
+        style)
+          PACKAGE=hlint
+          echo "Downloading $PACKAGE now ..."
+
+          RELEASES=$(curl --silent https://github.com/ndmitchell/$PACKAGE/releases)
+          URL=https://github.com/$(echo "$RELEASES" | grep -o '\"[^\"]*-x86_64-linux\.tar\.gz\"' | sed s/\"//g | head -n1)
+          VERSION=$(echo "$URL" | sed -e 's/.*-\([\.0-9]\+\)-x86_64-linux\.tar\.gz/\1/')
+
+          curl --progress-bar --location -o"$PACKAGE.tar.gz" "$URL"
+          tar -xzf "$PACKAGE.tar.gz" -C .
+          mv "$PACKAGE-$VERSION" "$PACKAGE"
+          export PATH="$(pwd)"/hlint:$PATH
+          ;;
+        cabal)
+          sudo add-apt-repository -y ppa:hvr/ghc
+          sudo apt-get update
+          sudo apt-get install cabal-install-$CABALVER ghc-$GHCVER
+          sudo apt-get install happy-1.19.4 alex-3.1.3
+          export PATH=$HOME/.local/bin:/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:$PATH
+          cabal --version
+          cabal update
+          PACKAGES=$(stack --install-ghc query locals | grep '^ *path' | sed 's@^ *path:@@')
+          ;;
+          cabal install --only-dependencies --enable-tests --enable-benchmarks --force-reinstalls --ghc-options=-O0 --reorder-goals --max-backjumps=-1 $CABALARGS $PACKAGES
+
+        *)
+          export PATH=$HOME/.local/bin:/opt/ghc/$GHCVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:$PATH
+          stack --no-terminal --install-ghc $ARGS test --bench --only-dependencies
+          ;;
+      esac
+      set -ex
+      case "$BUILD" in
+        style)
+          hlint src/
+          ;;
+        cabal)
+          cabal install --enable-tests --enable-benchmarks --force-reinstalls --ghc-options=-O0 --reorder-goals --max-backjumps=-1 $CABALARGS $PACKAGES
+
+          ORIGDIR=$(pwd)
+          for dir in $PACKAGES
+          do
+            cd $dir
+            cabal check || [ "$CABALVER" == "1.16" ]
+            cabal sdist
+            PKGVER=$(cabal info . | awk '{print $2;exit}')
+            SRC_TGZ=$PKGVER.tar.gz
+            cd dist
+            tar zxfv "$SRC_TGZ"
+            cd "$PKGVER"
+            cabal configure --enable-tests --ghc-options -O0
+            cabal build
+            if [ "$CABALVER" = "1.16" ] || [ "$CABALVER" = "1.18" ]; then
+              cabal test
+            else
+              cabal test --show-details=streaming --log=/dev/stdout
+           fi
+          cd $ORIGDIR
+       done
+          ;;
+        *)
+          stack --no-terminal $ARGS test --bench --no-run-benchmarks --haddock --no-haddock-deps
+          ;;
+      esac
+      set +ex
+    env:
+      OS_NAME: ${{ parameters.os }}
+      AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+    displayName: 'Installation ${{parameters.os}} & Build'
+    continueOnError: ${{ eq(variables['STACK_YAML'], 'stack-nightly.yaml') }}
