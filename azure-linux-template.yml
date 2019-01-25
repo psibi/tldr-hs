@@ -11,11 +11,11 @@ jobs:
       stack-lts-13:
         BUILD: stack
         STACK_YAML: stack-lts-13.yaml
-      cabal:
+      cabal-8.4.3:
         BUILD: cabal
         GHCVER: 8.4.3
         CABALVER: 2.4
-      cabal:
+      cabal-8.6.3:
         BUILD: cabal
         GHCVER: 8.6.3
         CABALVER: 2.4
