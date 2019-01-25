@@ -106,4 +106,3 @@ jobs:
     env:
       OS_NAME: ${{ parameters.os }}
     displayName: 'Installation ${{parameters.os}} & Test'
-    continueOnError: ${{ eq(variables['STACK_YAML'], 'stack-nightly.yaml') }}
