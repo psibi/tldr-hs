@@ -13,17 +13,21 @@ jobs:
         STACK_YAML: stack-lts-13.yaml
       cabal:
         BUILD: cabal
+        GHCVER: 8.4.3
+        CABALVER: 2.4
+      cabal:
+        BUILD: cabal
         GHCVER: 8.6.3
         CABALVER: 2.4
       nightly:
         BUILD: stack
-        STACK_YAML: stack-nightly.yaml
+        ARGS: "--resolver nightly"
       style:
         BUILD: style
       pedantic:
         BUILD: pedantic
         STACK_YAML: stack.yaml
-    maxParallel: 5
+    maxParallel: 6
   steps:
   - script: |
       export STACK_ROOT="$(Build.SourcesDirectory)"/.stack-root;
@@ -47,8 +51,14 @@ jobs:
           sudo add-apt-repository -y ppa:hvr/ghc
           sudo apt-get update
           sudo apt-get install cabal-install-$CABALVER ghc-$GHCVER
-          sudo apt-get install happy-1.19.4 alex-3.1.3
-          export PATH=$HOME/.local/bin:/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/happy/1.19.4/bin:/opt/alex/3.1.3/bin:$PATH
+          # See note here: https://github.com/haskell-CI/haskell-ci#alex--happy-with-ghc--78
+          if [ $GHCVER = "head" ] || [ ${GHCVER%.*} = "7.8" ] || [ ${GHCVER%.*} = "7.10" ]; then
+            sudo apt-get install happy-1.19.4 alex-3.1.3
+            export PATH=/opt/alex/3.1.3/bin:/opt/happy/1.19.4/bin:$PATH
+          else
+            sudo apt-get install happy alex
+          fi
+          export PATH=$HOME/.local/bin:/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$PATH
           cabal --version
           cabal update
           PACKAGES=$(stack --install-ghc query locals | grep '^ *path' | sed 's@^ *path:@@')
@@ -95,5 +105,5 @@ jobs:
       set +ex
     env:
       OS_NAME: ${{ parameters.os }}
-    displayName: 'Installation ${{parameters.os}} & Build'
+    displayName: 'Installation ${{parameters.os}} & Test'
     continueOnError: ${{ eq(variables['STACK_YAML'], 'stack-nightly.yaml') }}
