@@ -93,7 +93,7 @@ jobs:
             if [ "$CABALVER" = "1.16" ] || [ "$CABALVER" = "1.18" ]; then
               cabal test
             else
-              cabal test --show-details=streaming --log=/dev/stdout
+              cabal test --show-details=streaming
             fi
             cd $ORIGDIR
           done
