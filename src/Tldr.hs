@@ -93,7 +93,7 @@ handleSubsetNodeType _ = mempty
 
 
 handleSubsetNode :: Node -> Text
-handleSubsetNode (Node _ ntype xs) = handleSubsetNodeType ntype <> (T.concat $ Prelude.map handleSubsetNode xs)
+handleSubsetNode (Node _ ntype xs) = handleSubsetNodeType ntype <> T.concat (Prelude.map handleSubsetNode xs)
 
 handleParagraph :: [Node] -> Handle -> IO ()
 handleParagraph xs handle = TIO.hPutStrLn handle $ T.concat $ Prelude.map handleSubsetNode xs
@@ -105,7 +105,7 @@ handleNode (Node _ ITEM xs) handle = changeConsoleSetting ITEM >> handleParagrap
 handleNode (Node _ ntype xs) handle = do
   changeConsoleSetting ntype
   renderNode ntype handle
-  mapM_ (\(Node _ ntype' ns) -> renderNode ntype' handle >> mapM_ (flip handleNode $ handle) ns) xs
+  mapM_ (\(Node _ ntype' ns) -> renderNode ntype' handle >> mapM_ (`handleNode` handle) ns) xs
   setSGR [Reset]
 
 parsePage :: FilePath -> IO Node
