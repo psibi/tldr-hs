@@ -23,8 +23,8 @@ jobs:
     vmImage: macOS-10.13
     os: osx
 
-# - template: azure-windows-template.yml
-#   parameters:
-#    name: Windows
-#    vmImage: vs2017-win2016
-#    os: windows
+- template: azure-windows-template.yml
+  parameters:
+   name: Windows
+   vmImage: vs2017-win2016
+   os: windows
