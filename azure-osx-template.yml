@@ -20,8 +20,8 @@ jobs:
       mkdir -p ~/.local/bin
       curl -skL https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin;
       export PATH=$HOME/.local/bin:$PATH
-      stack --no-terminal --install-ghc $ARGS test --bench --only-dependencies
-      stack --no-terminal $ARGS test --bench --no-run-benchmarks --haddock --no-haddock-deps
+      stack --install-ghc $ARGS test --bench --only-dependencies
+      stack $ARGS test --bench --no-run-benchmarks --haddock --no-haddock-deps
     env:
       OS_NAME: ${{ parameters.os }}
     displayName: 'Installation ${{parameters.os}} & Test'

@@ -8,8 +8,8 @@
 # Copy these contents into the root directory of your Github project in a file
 # named azure-pipelines.yml
 #
-# For better organization, you split
-#
+# For better organization, you split various jobs into seprate parts
+# and each of them are controlled via individual file.
 jobs:
 - template: azure-linux-template.yml
   parameters:

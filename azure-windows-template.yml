@@ -20,8 +20,8 @@ jobs:
       export STACK_ROOT="$(Build.SourcesDirectory)"/.stack-root;
       curl -sSkL http://www.stackage.org/stack/windows-i386 -o /usr/bin/stack.zip
       unzip -o /usr/bin/stack.zip -d /usr/bin/
-      stack --no-terminal --install-ghc $ARGS test --bench --only-dependencies
-      stack --no-terminal $ARGS test --bench --no-run-benchmarks --haddock --no-haddock-deps
+      stack --install-ghc $ARGS test --bench --only-dependencies
+      stack $ARGS test --bench --no-run-benchmarks --haddock --no-haddock-deps
     env:
       OS_NAME: ${{ parameters.os }}
     displayName: 'Installation ${{parameters.os}} & Test'
