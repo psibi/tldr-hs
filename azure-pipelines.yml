@@ -1,5 +1,8 @@
+trigger: none
+pr: none
+
 schedules:
-- cron: "25 7 * * *"
+- cron: "29 7 * * *"
   displayName: Daily midnight build
   branches:
     include:
