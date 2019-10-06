@@ -1,7 +1,5 @@
 # tldr
 
-[![Linux build](https://travis-ci.org/psibi/tldr-hs.svg?branch=master)](https://travis-ci.org/psibi/tldr-hs)
-[![Window build](https://ci.appveyor.com/api/projects/status/wlqa2ndsquk1psqs/branch/master?svg=true)](https://ci.appveyor.com/project/psibi/tldr-hs/branch/master)
 [![Build Status](https://dev.azure.com/psibi2000/tldr-hs/_apis/build/status/psibi.tldr-hs?branchName=master)](https://dev.azure.com/psibi2000/tldr-hs/_build/latest?definitionId=5?branchName=master)
 
 [![Hackage](https://img.shields.io/hackage/v/tldr.svg)](https://hackage.haskell.org/package/tldr)
