@@ -1,58 +1,59 @@
-{-#LANGUAGE ScopedTypeVariables#-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Main where
 
-import Tldr
-import Options.Applicative hiding ((<>))
-import Data.Semigroup ((<>))
 import Control.Monad
+import Data.List (intercalate, isPrefixOf)
+import Data.Semigroup ((<>))
+import Data.Version (showVersion)
+import GHC.IO.Handle.FD (stdout)
+import Options.Applicative hiding ((<>))
+import Paths_tldr (version)
 import System.Directory
+import System.Environment (getArgs, withArgs)
 import System.FilePath
 import System.Process.Typed
-import System.Environment (getArgs, withArgs)
-import GHC.IO.Handle.FD (stdout)
-import Paths_tldr (version)
-import Data.Version (showVersion)
+import Tldr
 
 data TldrOpts = TldrOpts
   { pageName :: String
   } deriving (Show)
 
 tldrDirName :: String
-tldrDirName = ".tldr"
+tldrDirName = "tldr"
 
 repoHttpsUrl :: String
 repoHttpsUrl = "https://github.com/tldr-pages/tldr.git"
 
 checkDirs :: [String]
-checkDirs = ["common", "linux", "osx", "windows"]
+checkDirs = ["common", "linux", "osx", "windows", "sunos"]
 
 tldrInitialized :: IO Bool
 tldrInitialized = do
-  homeDir <- getHomeDirectory
-  let dir1 = homeDir </> tldrDirName
-      dir2 = homeDir </> tldrDirName </> "tldr"
-      pages = homeDir </> tldrDirName </> "tldr" </> "pages"
-  exists <- mapM doesDirectoryExist [dir1, dir2, pages]
+  dataDir <- getXdgDirectory XdgData tldrDirName
+  let dir2 = dataDir </> "tldr"
+      pages = dataDir </> "tldr" </> "pages"
+  exists <- mapM doesDirectoryExist [dataDir, dir2, pages]
   return $ all (== True) exists
 
 initializeTldrPages :: IO ()
 initializeTldrPages = do
   initialized <- tldrInitialized
   unless initialized $ do
-    homeDir <- getHomeDirectory
-    let cloneDir = homeDir </> tldrDirName
-    runProcess_ $ proc "mkdir" [cloneDir]
-    runProcess_ $ setWorkingDir cloneDir $ proc "git" ["clone", repoHttpsUrl]
-
+    dataDir <- getXdgDirectory XdgData tldrDirName
+    createDirectoryIfMissing False dataDir
+    runProcess_ $ setWorkingDir dataDir $ proc "git" ["clone", repoHttpsUrl]
 
 updateTldrPages :: IO ()
 updateTldrPages = do
-  homeDir <- getHomeDirectory
-  let repoDir = homeDir </> tldrDirName </> "tldr"
+  dataDir <- getXdgDirectory XdgData tldrDirName
+  let repoDir = dataDir </> "tldr"
   repoExists <- doesDirectoryExist repoDir
-  when repoExists $ do
-    runProcess_ $ setWorkingDir repoDir $ proc "git" ["pull", "origin", "master"] 
+  case repoExists of
+    True ->
+      runProcess_ $
+      setWorkingDir (repoDir) $ proc "git" ["pull", "origin", "master"]
+    False -> initializeTldrPages
 
 updateOption :: Parser (a -> a)
 updateOption = infoOption "update" (long "update" <> help "Update tldr pages")
@@ -66,7 +67,9 @@ tldrParserInfo =
   where
     versionOption :: Parser (a -> a)
     versionOption =
-      infoOption (showVersion version) (long "version" <> short 'v' <> help "Show version")
+      infoOption
+        (showVersion version)
+        (long "version" <> short 'v' <> help "Show version")
 
 programOptions :: Parser TldrOpts
 programOptions =
@@ -81,21 +84,39 @@ pageExists fname = do
 
 getPagePath :: String -> IO (Maybe FilePath)
 getPagePath page = do
-  homeDir <- getHomeDirectory
-  let pageDir = homeDir </> tldrDirName </> "tldr" </> "pages"
+  dataDir <- getXdgDirectory XdgData tldrDirName
+  let pageDir = dataDir </> "tldr" </> "pages"
       paths = map (\x -> pageDir </> x </> page <.> "md") checkDirs
   foldr1 (<|>) <$> mapM pageExists paths
+
+isOption :: String -> Bool
+isOption string = string `isPrefixOf` "--"
+
+hasOption :: [String] -> Bool
+hasOption xs = any isOption xs
 
 main :: IO ()
 main = do
   args <- getArgs
-  case execParserPure (prefs noBacktrack) tldrParserInfo args of
+  case execParserPure (prefs showHelpOnEmpty) tldrParserInfo args of
     failOpts@(Failure _)
       | args == ["--update"] -> updateTldrPages
-      | otherwise -> handleParseResult failOpts >> return ()
+      | otherwise ->
+        if hasOption args
+          then handleParseResult failOpts >> return ()
+          else do
+            let npage = intercalate "-" args
+            fname <- getPagePath npage
+            case fname of
+              Just path -> renderPage path stdout
+              Nothing ->
+                putStrLn ("No tldr entry for " <> (intercalate " " args))
     Success opts -> do
-         initializeTldrPages
-         let page = pageName opts
-         fname <- getPagePath page
-         maybe (putStrLn ("No tldr entry for " <> page)) (flip renderPage stdout) fname 
+      initializeTldrPages
+      let page = pageName opts
+      fname <- getPagePath page
+      maybe
+        (putStrLn ("No tldr entry for " <> page))
+        (flip renderPage stdout)
+        fname
     compOpts@(CompletionInvoked _) -> handleParseResult compOpts >> return ()

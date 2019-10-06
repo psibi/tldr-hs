@@ -1,3 +1,9 @@
+# 0.5.0
+
+* Obey XdgData for storing the files.
+* Also search pages from sunos directory now.
+* Support subcommansds ie. tldr git submodule will now work.
+
 # 0.4.0.2
 
 * Fix double initialization bug. Credits to @Kove-W-O-Salter
