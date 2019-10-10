@@ -1,3 +1,7 @@
+# 0.5.1
+
+* Proper options handling
+
 # 0.5.0
 
 * Obey XdgData for storing the files.

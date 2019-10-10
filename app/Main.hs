@@ -15,9 +15,11 @@ import System.FilePath
 import System.Process.Typed
 import Tldr
 
-data TldrOpts = TldrOpts
-  { pageName :: String
-  } deriving (Show)
+data TldrOpts =
+  TldrOpts
+    { pageName :: String
+    }
+  deriving (Show)
 
 tldrDirName :: String
 tldrDirName = "tldr"
@@ -90,7 +92,7 @@ getPagePath page = do
   foldr1 (<|>) <$> mapM pageExists paths
 
 isOption :: String -> Bool
-isOption string = string `isPrefixOf` "--"
+isOption string = "--" `isPrefixOf` string
 
 hasOption :: [String] -> Bool
 hasOption xs = any isOption xs
@@ -102,7 +104,7 @@ main = do
     failOpts@(Failure _)
       | args == ["--update"] -> updateTldrPages
       | otherwise ->
-        if hasOption args
+        if (hasOption args || args == [])
           then handleParseResult failOpts >> return ()
           else do
             let npage = intercalate "-" args
