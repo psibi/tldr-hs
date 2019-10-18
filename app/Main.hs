@@ -18,6 +18,7 @@ import Tldr
 data TldrOpts =
   TldrOpts
     { pageName :: String
+    , platformOption :: String
     }
   deriving (Show)
 
@@ -58,15 +59,19 @@ updateTldrPages = do
     False -> initializeTldrPages
 
 updateOption :: Parser (a -> a)
-updateOption = infoOption "update" (long "update" <> help "Update tldr pages")
+updateOption =
+  infoOption "update" (long "update" <> short 'u' <> help "Update tldr pages")
 
 tldrParserInfo :: ParserInfo TldrOpts
 tldrParserInfo =
   info
-    (helper <*> versionOption <*> updateOption <*> programOptions)
+    (helper <*> versionOption <*> updateOption <*> programOptions <*>
+     platformOption)
     (fullDesc <> progDesc "tldr Client program" <>
      header "tldr - Simplified and community-driven man pages")
   where
+    platformOption :: Parser (a -> a)
+    platformOption = undefined
     versionOption :: Parser (a -> a)
     versionOption =
       infoOption
