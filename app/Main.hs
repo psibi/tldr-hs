@@ -39,7 +39,7 @@ programOptions :: Parser TldrOpts
 programOptions = (TldrOpts <$> (updateIndexCommand <|> viewPageCommand))
 
 updateIndexCommand :: Parser TldrCommand
-updateIndexCommand = flag UpdateIndex UpdateIndex (long "update" <> short 'u')
+updateIndexCommand = flag' UpdateIndex (long "update" <> short 'u')
 
 viewOptionsParser :: Parser ViewOptions
 viewOptionsParser = ViewOptions <$> platformFlag
