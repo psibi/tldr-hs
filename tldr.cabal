@@ -1,7 +1,8 @@
 name:                tldr
 version:             0.5.1
 synopsis:            Haskell tldr client
-description:         Haskell tldr client with support for updating and viewing tldr pages.
+description:         Haskell tldr client with support for viewing tldr pages. Has offline
+                     cache for accessing pages.
 homepage:            https://github.com/psibi/tldr-hs#readme
 license:             BSD3
 license-file:        LICENSE
