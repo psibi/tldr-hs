@@ -1,3 +1,9 @@
+# 0.6.0
+
+* Make it obey --platform option
+* Add -u as an alias for --update
+
+
 # 0.5.1
 
 * Proper options handling
