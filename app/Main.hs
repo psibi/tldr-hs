@@ -131,7 +131,7 @@ handleTldrOpts TldrOpts {..} = do
       fname <- getPagePath npage (getCheckDirs voptions)
       case fname of
         Just path -> renderPage path stdout
-        Nothing -> putStrLn ("No tldr entry for " <> npage)
+        Nothing -> putStrLn ("No tldr entry for " <> (intercalate " " pages))
 
 main :: IO ()
 main = do
