@@ -1,8 +1,8 @@
 name:                tldr
-version:             0.5.1
+version:             0.6.0
 synopsis:            Haskell tldr client
 description:         Haskell tldr client with support for viewing tldr pages. Has offline
-                     cache for accessing pages.
+                     cache for accessing pages. Visit https://tldr.sh for more details.
 homepage:            https://github.com/psibi/tldr-hs#readme
 license:             BSD3
 license-file:        LICENSE
@@ -36,6 +36,7 @@ executable tldr
                      , filepath
                      , typed-process
                      , semigroups
+                     , containers
   default-language:    Haskell2010
 
 test-suite tldr-test

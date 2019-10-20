@@ -19,14 +19,33 @@ Haskell client for tldr
 $ tldr --help
 tldr - Simplified and community-driven man pages
 
-Usage: tldr [-v|--version] [--update] COMMAND
+Usage: tldr [-v|--version] ((-u|--update) | [-p|--platform PLATFORM] COMMAND)
   tldr Client program
 
 Available options:
   -h,--help                Show this help text
   -v,--version             Show version
-  --update                 Update tldr pages
+  -u,--update              Update offline cache of tldr pages
+  -p,--platform PLATFORM   Prioritize specfic platform while searching. Valid
+                           values include linux, osx, windows, sunos
   COMMAND                  name of the command
+```
+
+Or a much better example of the usage:
+
+``` shellsession
+$ tldr tldr
+tldr
+Simplified man pages.More information: https://tldr.sh.
+
+ - Get typical usages of a command (hint: this is how you got here!):
+   tldr {{command}}
+
+ - Show the tar tldr page for linux:
+   tldr -p {{linux}} {{tar}}
+
+ - Get help for a git subcommand:
+   tldr {{git checkout}}
 ```
 
 ## Snapshot

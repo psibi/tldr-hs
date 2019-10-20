@@ -1,5 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE BangPatterns #-}
 
 module Main
   ( main
@@ -8,6 +9,7 @@ module Main
 import Control.Monad
 import Data.List (intercalate)
 import Data.Semigroup ((<>))
+import qualified Data.Set as Set
 import Data.Version (showVersion)
 import GHC.IO.Handle.FD (stdout)
 import Options.Applicative
@@ -39,7 +41,10 @@ programOptions :: Parser TldrOpts
 programOptions = (TldrOpts <$> (updateIndexCommand <|> viewPageCommand))
 
 updateIndexCommand :: Parser TldrCommand
-updateIndexCommand = flag' UpdateIndex (long "update" <> short 'u')
+updateIndexCommand =
+  flag'
+    UpdateIndex
+    (long "update" <> short 'u' <> help "Update offline cache of tldr pages")
 
 viewOptionsParser :: Parser ViewOptions
 viewOptionsParser = ViewOptions <$> platformFlag
@@ -51,7 +56,15 @@ viewPageCommand =
 
 platformFlag :: Parser (Maybe String)
 platformFlag =
-  optional (strOption (long "platform" <> short 'p' <> metavar "PLATFORM"))
+  optional
+    (strOption
+       (long "platform" <> short 'p' <> metavar "PLATFORM" <>
+        help
+          ("Prioritize specfic platform while searching. Valid values include " <>
+           platformHelpValue)))
+  where
+    platformHelpValue :: String
+    platformHelpValue = intercalate ", " platformDirs
 
 tldrDirName :: String
 tldrDirName = "tldr"
@@ -60,7 +73,10 @@ repoHttpsUrl :: String
 repoHttpsUrl = "https://github.com/tldr-pages/tldr.git"
 
 checkDirs :: [String]
-checkDirs = ["common", "linux", "osx", "windows", "sunos"]
+checkDirs = "common" : platformDirs
+
+platformDirs :: [String]
+platformDirs = ["linux", "osx", "windows", "sunos"]
 
 tldrInitialized :: IO Bool
 tldrInitialized = do
@@ -120,7 +136,16 @@ getCheckDirs :: ViewOptions -> [String]
 getCheckDirs voptions =
   case platformOption voptions of
     Nothing -> checkDirs
-    Just platform -> ["common", platform]
+    Just platform -> nubOrd $ ["common", platform] <> checkDirs
+
+-- | Strip out duplicates
+nubOrd :: Ord a => [a] -> [a]
+nubOrd = loop mempty
+  where
+    loop _ [] = []
+    loop !s (a:as)
+      | a `Set.member` s = loop s as
+      | otherwise = a : loop (Set.insert a s) as
 
 handleTldrOpts :: TldrOpts -> IO ()
 handleTldrOpts TldrOpts {..} = do

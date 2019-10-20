@@ -2,7 +2,7 @@
 
 * Make it obey --platform option
 * Add -u as an alias for --update
-
+* Make parsing more robust
 
 # 0.5.1
 
@@ -12,7 +12,7 @@
 
 * Obey XdgData for storing the files.
 * Also search pages from sunos directory now.
-* Support subcommansds ie. tldr git submodule will now work.
+* Support subcommands ie. tldr git submodule will now work.
 
 # 0.4.0.2
 
