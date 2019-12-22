@@ -15,36 +15,38 @@ import GHC.IO.Handle.FD (stdout)
 import Options.Applicative
 import Paths_tldr (version)
 import System.Directory
-import System.Environment (getArgs)
+import System.Environment (getArgs, getExecutablePath)
 import System.FilePath
 import System.Process.Typed
 import Tldr
 
-data TldrOpts =
-  TldrOpts
-    { tldrAction :: TldrCommand
-    }
-  deriving (Show)
+data TldrOpts = TldrOpts
+  { tldrAction :: TldrCommand
+  } deriving (Show)
 
 data TldrCommand
   = UpdateIndex
-  | ViewPage ViewOptions [String]
+  | ViewPage ViewOptions
+             [String]
+  | About
   deriving (Show, Eq, Ord)
 
-data ViewOptions =
-  ViewOptions
-    { platformOption :: Maybe String
-    }
-  deriving (Show, Eq, Ord)
+data ViewOptions = ViewOptions
+  { platformOption :: Maybe String
+  } deriving (Show, Eq, Ord)
 
 programOptions :: Parser TldrOpts
-programOptions = (TldrOpts <$> (updateIndexCommand <|> viewPageCommand))
+programOptions =
+  (TldrOpts <$> (updateIndexCommand <|> viewPageCommand <|> aboutFlag))
 
 updateIndexCommand :: Parser TldrCommand
 updateIndexCommand =
   flag'
     UpdateIndex
     (long "update" <> short 'u' <> help "Update offline cache of tldr pages")
+
+aboutFlag :: Parser TldrCommand
+aboutFlag = flag' About (long "about" <> short 'a' <> help "About this program")
 
 viewOptionsParser :: Parser ViewOptions
 viewOptionsParser = ViewOptions <$> platformFlag
@@ -147,10 +149,22 @@ nubOrd = loop mempty
       | a `Set.member` s = loop s as
       | otherwise = a : loop (Set.insert a s) as
 
+handleAboutFlag :: IO ()
+handleAboutFlag = do
+  path <- getExecutablePath
+  let content =
+        unlines
+          [ path <> " v" <> (showVersion version)
+          , "Copyright (C) 2017 Sibi Prabakaran"
+          , "Source available at https://github.com/psibi/tldr-hs"
+          ]
+  putStr content
+
 handleTldrOpts :: TldrOpts -> IO ()
 handleTldrOpts TldrOpts {..} = do
   case tldrAction of
     UpdateIndex -> updateTldrPages
+    About -> handleAboutFlag
     ViewPage voptions pages -> do
       let npage = intercalate "-" pages
       fname <- getPagePath npage (getCheckDirs voptions)
