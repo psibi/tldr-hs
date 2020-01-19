@@ -1,3 +1,7 @@
+# 0.6.1
+
+* Implement --about option
+
 # 0.6.0
 
 * Make it obey --platform option
