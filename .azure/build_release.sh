@@ -2,6 +2,8 @@
 
 set -eux
 
+export PATH=$HOME/.local/bin:$PATH
+
 rm -rf "${BUILD_BINARIESDIRECTORY}"
 mkdir "${BUILD_BINARIESDIRECTORY}"
 
