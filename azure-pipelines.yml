@@ -1,3 +1,11 @@
+trigger:
+  branches:
+    include:
+    - '*'
+  tags:
+    include:
+    - '*'
+
 jobs:
 - template: ./.azure/azure-linux-template.yml
   parameters:
