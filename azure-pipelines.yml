@@ -11,9 +11,8 @@ jobs:
     vmImage: macOS-latest
     os: osx
 
-# TODO: Fix windows test suite
-# - template: ./.azure/azure-windows-template.yml
-#   parameters:
-#    name: Windows
-#    vmImage: windows-latest
-#    os: windows
+- template: ./.azure/azure-windows-template.yml
+  parameters:
+   name: Windows
+   vmImage: windows-latest
+   os: windows

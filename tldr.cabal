@@ -28,7 +28,7 @@ executable tldr
   hs-source-dirs:      app
   main-is:             Main.hs
   other-modules:       Paths_tldr
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  ghc-options:         -threaded -optl-static -optl-pthread -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , tldr
                      , optparse-applicative
