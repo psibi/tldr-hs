@@ -1,3 +1,8 @@
+# 0.6.2
+
+* package.yaml support for configuring package
+* CI releases binary now
+
 # 0.6.1
 
 * Implement --about option
