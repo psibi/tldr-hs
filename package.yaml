@@ -1,18 +1,22 @@
 name: tldr
 version: '0.6.1'
 synopsis: Haskell tldr client
-description: 'Haskell tldr client with support for viewing tldr pages. Has offline cache for accessing pages. Visit https://tldr.sh for more details.'
-category: Web
-author: Sibi
+description: |
+  Haskell tldr client with support for viewing tldr pages. Has offline
+  cache for accessing pages. Visit https://tldr.sh for more details.
+category: Web, CLI
+author: Sibi Prabakaran
 maintainer: sibi@psibi.in
-copyright: 2017 Sibi
+copyright: 2017 Sibi Prabakaran
 license: BSD3
 github: psibi/tldr-hs
+
 extra-source-files:
 - README.md
 - CHANGELOG.md
 - test/data/*.golden
 - test/data/*.md
+
 library:
   source-dirs: src
   exposed-modules:
@@ -23,6 +27,7 @@ library:
   - text
   - bytestring
   - ansi-terminal
+
 executables:
   tldr:
     main: Main.hs
@@ -42,6 +47,7 @@ executables:
     - typed-process
     - semigroups
     - containers
+
 tests:
   tldr-test:
     main: Spec.hs
