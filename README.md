@@ -10,6 +10,12 @@ Haskell client for tldr
 
 ## Installation
 
+See Github releases: https://github.com/psibi/tldr-hs/releases
+
+Executables are available for all the three major platforms: Linux, Windows and MacOS.
+
+Or
+
 1. [Install stack](https://docs.haskellstack.org/en/stable/README/#how-to-install)
 2. `stack install tldr`
 
