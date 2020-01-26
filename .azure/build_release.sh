@@ -5,4 +5,4 @@ set -eux
 rm -rf "${BUILD_BINARIESDIRECTORY}"
 mkdir "${BUILD_BINARIESDIRECTORY}"
 
-stack build --copy-bins "${BUILD_BINARIESDIRECTORY}/"
+stack install --local-bin-path "${BUILD_BINARIESDIRECTORY}"
