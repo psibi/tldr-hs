@@ -1,3 +1,7 @@
+# 0.6.3
+
+* fix linux build by dropping `-optl-static`
+
 # 0.6.2
 
 * package.yaml support for configuring package

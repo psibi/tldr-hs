@@ -1,5 +1,5 @@
 name: tldr
-version: '0.6.2'
+version: '0.6.3'
 synopsis: Haskell tldr client
 description: |
   Haskell tldr client with support for viewing tldr pages. Has offline
@@ -35,7 +35,7 @@ executables:
     when:
     - condition: os(linux)
       then:
-        ghc-options: -threaded -optl-static -optl-pthread -rtsopts -with-rtsopts=-N
+        ghc-options: -threaded -optl-pthread -rtsopts -with-rtsopts=-N
       else:
         ghc-options: -threaded -rtsopts -with-rtsopts=-N
     dependencies:
