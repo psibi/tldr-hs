@@ -1,6 +1,6 @@
 # 0.6.3
 
-* fix linux build by dropping `-optl-static`
+* Drop `-optl-static` for linux builds
 
 # 0.6.2
 
