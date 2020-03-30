@@ -1,3 +1,7 @@
+# 0.6.4
+
+* Fix cabal file
+
 # 0.6.3
 
 * Drop `-optl-static` for linux builds
