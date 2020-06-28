@@ -11,13 +11,14 @@ import Data.List (intercalate)
 import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import Data.Version (showVersion)
-import GHC.IO.Handle.FD (stdout)
+import System.IO (stdout)
 import Options.Applicative
 import Paths_tldr (version)
 import System.Directory
-import System.Environment (getArgs, getExecutablePath)
+import System.Environment (getArgs, getExecutablePath, lookupEnv)
 import System.FilePath
 import System.Process.Typed
+import Data.Char (toLower)
 import Tldr
 
 data TldrOpts = TldrOpts
@@ -31,9 +32,15 @@ data TldrCommand
   | About
   deriving (Show, Eq, Ord)
 
-data ViewOptions = ViewOptions
-  { platformOption :: Maybe String
-  } deriving (Show, Eq, Ord)
+data ViewOptions =
+  ViewOptions
+    { platformOption :: Maybe String
+    , languageOption :: Maybe String
+    }
+  deriving (Show, Eq, Ord)
+
+englishViewOptions :: ViewOptions -> ViewOptions
+englishViewOptions xs = xs { languageOption = Just "en_US.utf8" }
 
 programOptions :: Parser TldrOpts
 programOptions =
@@ -49,7 +56,7 @@ aboutFlag :: Parser TldrCommand
 aboutFlag = flag' About (long "about" <> short 'a' <> help "About this program")
 
 viewOptionsParser :: Parser ViewOptions
-viewOptionsParser = ViewOptions <$> platformFlag
+viewOptionsParser = ViewOptions <$> platformFlag <*> languageFlag
 
 viewPageCommand :: Parser TldrCommand
 viewPageCommand =
@@ -67,6 +74,14 @@ platformFlag =
   where
     platformHelpValue :: String
     platformHelpValue = intercalate ", " platformDirs
+
+languageFlag :: Parser (Maybe String)
+languageFlag =
+  optional
+    (strOption
+       (long "language" <> short 'L' <> metavar "LOCALE" <>
+        help
+          ("Preferred language for the page returned")))
 
 tldrDirName :: String
 tldrDirName = "tldr"
@@ -127,10 +142,15 @@ pageExists fname = do
     then return $ Just fname
     else return Nothing
 
-getPagePath :: String -> [String] -> IO (Maybe FilePath)
-getPagePath page platformDirs = do
+getPagePath :: Locale -> String -> [String] -> IO (Maybe FilePath)
+getPagePath locale page platformDirs = do
   dataDir <- getXdgDirectory XdgData tldrDirName
-  let pageDir = dataDir </> "tldr" </> "pages"
+  let currentLocale = case locale of
+                        English -> "pages"
+                        Other xs -> "pages." <> xs
+                        Unknown xs -> "pages." <> xs
+                        Missing -> "pages"
+      pageDir = dataDir </> "tldr" </> currentLocale
       paths = map (\x -> pageDir </> x </> page <.> "md") platformDirs
   foldr1 (<|>) <$> mapM pageExists paths
 
@@ -161,16 +181,46 @@ handleAboutFlag = do
   putStr content
 
 handleTldrOpts :: TldrOpts -> IO ()
-handleTldrOpts TldrOpts {..} = do
+handleTldrOpts opts@TldrOpts {..} = do
   case tldrAction of
     UpdateIndex -> updateTldrPages
     About -> handleAboutFlag
-    ViewPage voptions pages -> do
+    vopts@(ViewPage voptions pages) -> do
       let npage = intercalate "-" pages
-      fname <- getPagePath npage (getCheckDirs voptions)
+      locale <-
+        case (languageOption voptions) of
+          Nothing -> retriveLocale
+          Just lg -> pure $ computeLocale (Just lg)
+      fname <- getPagePath locale npage (getCheckDirs voptions)
       case fname of
         Just path -> renderPage path stdout
-        Nothing -> putStrLn ("No tldr entry for " <> (intercalate " " pages))
+        Nothing -> do
+          if checkLocale locale
+            then putStrLn ("No tldr entry for " <> (intercalate " " pages))
+            else handleTldrOpts
+                   (opts
+                      { tldrAction =
+                          ViewPage (englishViewOptions voptions) pages
+                      })
+
+checkLocale :: Locale -> Bool
+checkLocale English = True
+checkLocale _ = False
+
+data Locale = English | Missing | Other String | Unknown String
+
+retriveLocale :: IO Locale
+retriveLocale = do
+  lang <- lookupEnv "LANG"
+  pure $ computeLocale lang
+          
+computeLocale :: Maybe String -> Locale
+computeLocale lang = case map toLower <$> lang of
+                       Nothing -> Missing
+                       Just ('e':'n':_) -> English
+                       Just (a:b:'_':_) -> Other (a:b:[])
+                       Just (a:b:c:'_':_) -> Other (a:b:c:[])
+                       Just str -> Unknown str
 
 main :: IO ()
 main = do

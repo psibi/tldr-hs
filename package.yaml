@@ -1,5 +1,5 @@
 name: tldr
-version: '0.6.4'
+version: '0.7.0'
 synopsis: Haskell tldr client
 description: |
   Haskell tldr client with support for viewing tldr pages. Has offline
@@ -17,6 +17,12 @@ extra-source-files:
 - test/data/*.golden
 - test/data/*.md
 
+flags:
+  static:
+    description: Statically link executables.
+    manual: true
+    default: false
+
 library:
   source-dirs: src
   exposed-modules:
@@ -33,11 +39,12 @@ executables:
     main: Main.hs
     source-dirs: app
     when:
-    - condition: os(linux)
-      then:
-        ghc-options: -threaded -optl-pthread -rtsopts -with-rtsopts=-N
-      else:
-        ghc-options: -threaded -rtsopts -with-rtsopts=-N
+      - condition: flag(static) && os(linux)
+        then:
+          ld-options: -static
+          ghc-options: "-rtsopts -threaded -optc-Os -optl=-pthread -optl=-static -fPIC"
+        else:
+          ghc-options: "-rtsopts -threaded"
     dependencies:
     - base
     - tldr
@@ -61,4 +68,3 @@ tests:
     - tldr
     - tasty
     - tasty-golden
-

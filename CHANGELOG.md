@@ -1,3 +1,7 @@
+# 0.7.0
+
+* Make it obey --language (-L) option.
+
 # 0.6.4
 
 * Fix cabal file
