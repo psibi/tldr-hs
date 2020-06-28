@@ -4,18 +4,19 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d47f8d65bfc505f5820b8234498ac3ada64de3d247fca3d0305310115c2696a2
+-- hash: 8f9fa686eb8658f3955ad1bf70b3d881c3d6675b2153569a538882bc700eaad6
 
 name:           tldr
-version:        0.6.0
+version:        0.7.0
 synopsis:       Haskell tldr client
-description:    Haskell tldr client with support for viewing tldr pages. Has offline cache for accessing pages. Visit https://tldr.sh for more details.
+description:    Haskell tldr client with support for viewing tldr pages. Has offline
+                cache for accessing pages. Visit https://tldr.sh for more details.
 category:       Web, CLI
 homepage:       https://github.com/psibi/tldr-hs#readme
 bug-reports:    https://github.com/psibi/tldr-hs/issues
 author:         Sibi Prabakaran
 maintainer:     sibi@psibi.in
-copyright:      2017 Sibi
+copyright:      2017 Sibi Prabakaran
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
