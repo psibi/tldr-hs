@@ -39,7 +39,7 @@ executables:
     main: Main.hs
     source-dirs: app
     when:
-      - condition: flag(static)
+      - condition: flag(static) && os(linux)
         then:
           ld-options: -static
           ghc-options: "-rtsopts -threaded -optc-Os -optl=-pthread -optl=-static -fPIC"

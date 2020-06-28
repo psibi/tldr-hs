@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8f9fa686eb8658f3955ad1bf70b3d881c3d6675b2153569a538882bc700eaad6
+-- hash: 88d378cdcf8422ec2651e3d350ffcb2f0a4f7a46dce43516286864b209522d78
 
 name:           tldr
 version:        0.7.0
@@ -69,7 +69,7 @@ executable tldr
     , semigroups
     , tldr
     , typed-process
-  if flag(static)
+  if flag(static) && os(linux)
     ghc-options: -rtsopts -threaded -optc-Os -optl=-pthread -optl=-static -fPIC
     ld-options: -static
   else
