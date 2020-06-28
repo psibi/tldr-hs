@@ -219,6 +219,7 @@ computeLocale lang = case map toLower <$> lang of
                        Nothing -> Missing
                        Just ('e':'n':_) -> English
                        Just (a:b:'_':_) -> Other (a:b:[])
+                       Just (a:b:c:'_':_) -> Other (a:b:c:[])
                        Just str -> Unknown str
 
 main :: IO ()

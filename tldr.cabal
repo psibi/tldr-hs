@@ -4,19 +4,18 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6d6a28bd0b56fd00a272f305ae388900bd3a5e235b44afb32bd4e758846bf2f7
+-- hash: d47f8d65bfc505f5820b8234498ac3ada64de3d247fca3d0305310115c2696a2
 
 name:           tldr
-version:        0.6.4
+version:        0.6.0
 synopsis:       Haskell tldr client
-description:    Haskell tldr client with support for viewing tldr pages. Has offline
-                cache for accessing pages. Visit https://tldr.sh for more details.
+description:    Haskell tldr client with support for viewing tldr pages. Has offline cache for accessing pages. Visit https://tldr.sh for more details.
 category:       Web, CLI
 homepage:       https://github.com/psibi/tldr-hs#readme
 bug-reports:    https://github.com/psibi/tldr-hs/issues
 author:         Sibi Prabakaran
 maintainer:     sibi@psibi.in
-copyright:      2017 Sibi Prabakaran
+copyright:      2017 Sibi
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -33,6 +32,11 @@ extra-source-files:
 source-repository head
   type: git
   location: https://github.com/psibi/tldr-hs
+
+flag static
+  description: Statically link executables.
+  manual: True
+  default: False
 
 library
   exposed-modules:
@@ -64,10 +68,11 @@ executable tldr
     , semigroups
     , tldr
     , typed-process
-  if os(linux)
-    ghc-options: -threaded -optl-pthread -rtsopts -with-rtsopts=-N
+  if flag(static)
+    ghc-options: -rtsopts -threaded -optc-Os -optl=-pthread -optl=-static -fPIC
+    ld-options: -static
   else
-    ghc-options: -threaded -rtsopts -with-rtsopts=-N
+    ghc-options: -rtsopts -threaded
   default-language: Haskell2010
 
 test-suite tldr-test
