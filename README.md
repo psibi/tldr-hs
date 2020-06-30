@@ -25,7 +25,8 @@ Or
 $ tldr --help
 tldr - Simplified and community-driven man pages
 
-Usage: tldr [-v|--version] ((-u|--update) | [-p|--platform PLATFORM] COMMAND)
+Usage: tldr [-v|--version] ((-u|--update) | [-p|--platform PLATFORM]
+            [-L|--language LOCALE] COMMAND | (-a|--about))
   tldr Client program
 
 Available options:
@@ -34,7 +35,9 @@ Available options:
   -u,--update              Update offline cache of tldr pages
   -p,--platform PLATFORM   Prioritize specfic platform while searching. Valid
                            values include linux, osx, windows, sunos
+  -L,--language LOCALE     Preferred language for the page returned
   COMMAND                  name of the command
+  -a,--about               About this program
 ```
 
 Or a much better example of the usage:
