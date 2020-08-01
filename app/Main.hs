@@ -11,11 +11,12 @@ import Data.List (intercalate)
 import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import Data.Version (showVersion)
-import System.IO (stdout)
+import System.IO (stdout, stderr, hPutStrLn)
 import Options.Applicative
 import Paths_tldr (version)
 import System.Directory
 import System.Environment (getArgs, getExecutablePath, lookupEnv)
+import System.Exit (exitFailure)
 import System.FilePath
 import System.Process.Typed
 import Data.Char (toLower)
@@ -196,7 +197,9 @@ handleTldrOpts opts@TldrOpts {..} = do
         Just path -> renderPage path stdout
         Nothing -> do
           if checkLocale locale
-            then putStrLn ("No tldr entry for " <> (intercalate " " pages))
+            then do
+              hPutStrLn stderr ("No tldr entry for " <> (intercalate " " pages))
+              exitFailure
             else handleTldrOpts
                    (opts
                       { tldrAction =

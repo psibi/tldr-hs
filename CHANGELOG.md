@@ -1,3 +1,7 @@
+# 0.7.1
+
+* Client gives non zero exit status for non-existent pages.
+
 # 0.7.0
 
 * Make it obey --language (-L) option.
