@@ -25,14 +25,19 @@ flags:
 
 library:
   source-dirs: src
-  exposed-modules:
-  - Tldr
   dependencies:
   - base >=4.7 && <5
   - cmark
   - text
   - bytestring
   - ansi-terminal
+  - optparse-applicative
+  - directory
+  - filepath
+  - typed-process
+  - semigroups
+  - containers
+
 
 executables:
   tldr:
@@ -48,12 +53,6 @@ executables:
     dependencies:
     - base
     - tldr
-    - optparse-applicative
-    - directory
-    - filepath
-    - typed-process
-    - semigroups
-    - containers
 
 tests:
   tldr-test:

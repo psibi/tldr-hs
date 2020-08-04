@@ -18,17 +18,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import GHC.IO.Handle (Handle)
 import System.Console.ANSI
-
-data ConsoleSetting =
-  ConsoleSetting
-    { italic :: Bool
-    , underline :: Underlining
-    , blink :: BlinkSpeed
-    , fgIntensity :: ColorIntensity
-    , fgColor :: Color
-    , bgIntensity :: ColorIntensity
-    , consoleIntensity :: ConsoleIntensity
-    }
+import Tldr.Types (ConsoleSetting(..))
 
 defConsoleSetting :: ConsoleSetting
 defConsoleSetting =
