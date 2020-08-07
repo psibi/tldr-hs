@@ -1,26 +1,43 @@
 {-#LANGUAGE RecordWildCards#-}
 {-# LANGUAGE BangPatterns #-}
 
-module Tldr.App.Handler where
+module Tldr.App.Handler
+  ( handleAboutFlag
+  , retriveLocale
+  , checkLocale
+  , englishViewOptions
+  , getCheckDirs
+  , initializeTldrPages
+  , pageExists
+  , getPagePath
+  , updateTldrPages
+  , handleTldrOpts
+  ) where
 
-import Data.Version (showVersion)
-import qualified Data.Set as Set
-import Paths_tldr (version)
-import System.Environment (getExecutablePath)
-import System.Directory (doesFileExist, XdgDirectory(..), getXdgDirectory, createDirectoryIfMissing, doesDirectoryExist)
-import System.FilePath ((</>), (<.>))
-import System.Process.Typed
-import Data.Semigroup ((<>))
-import Options.Applicative
-import Data.List (intercalate)
-import System.Environment (getArgs, lookupEnv)
-import Tldr
-import Tldr.Types
-import Tldr.App.Constant
 import Control.Monad (unless)
 import Data.Char (toLower)
+import Data.List (intercalate)
+import Data.Semigroup ((<>))
+import qualified Data.Set as Set
+import Data.Version (showVersion)
+import Options.Applicative
+import Paths_tldr (version)
+import System.Directory
+  ( XdgDirectory(..)
+  , createDirectoryIfMissing
+  , doesDirectoryExist
+  , doesFileExist
+  , getXdgDirectory
+  )
+import System.Environment (getExecutablePath)
+import System.Environment (lookupEnv)
 import System.Exit (exitFailure)
-import System.IO (stdout, stderr, hPutStrLn)
+import System.FilePath ((<.>), (</>))
+import System.IO (hPutStrLn, stderr, stdout)
+import System.Process.Typed
+import Tldr
+import Tldr.App.Constant
+import Tldr.Types
 
 handleAboutFlag :: IO ()
 handleAboutFlag = do
@@ -50,7 +67,7 @@ handleTldrOpts opts@TldrOpts {..} = do
   case tldrAction of
     UpdateIndex -> updateTldrPages
     About -> handleAboutFlag
-    vopts@(ViewPage voptions pages) -> do
+    ViewPage voptions pages -> do
       let npage = intercalate "-" pages
       locale <-
         case (languageOption voptions) of
@@ -87,10 +104,10 @@ computeLocale lang = case map toLower <$> lang of
                        Just ('e':'n':_) -> English
                        Just (a:b:'_':_) -> Other (a:b:[])
                        Just (a:b:c:'_':_) -> Other (a:b:c:[])
-                       Just str -> Unknown str
+                       Just other -> Unknown other
 
 getPagePath :: Locale -> String -> [String] -> IO (Maybe FilePath)
-getPagePath locale page platformDirs = do
+getPagePath locale page pDirs = do
   dataDir <- getXdgDirectory XdgData tldrDirName
   let currentLocale = case locale of
                         English -> "pages"
@@ -98,7 +115,7 @@ getPagePath locale page platformDirs = do
                         Unknown xs -> "pages." <> xs
                         Missing -> "pages"
       pageDir = dataDir </> "tldr" </> currentLocale
-      paths = map (\x -> pageDir </> x </> page <.> "md") platformDirs
+      paths = map (\x -> pageDir </> x </> page <.> "md") pDirs
   foldr1 (<|>) <$> mapM pageExists paths
 
 pageExists :: FilePath -> IO (Maybe FilePath)

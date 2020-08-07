@@ -14,11 +14,11 @@ module Tldr
 import CMark
 import Data.Monoid ((<>))
 import Data.Text hiding (cons)
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import GHC.IO.Handle (Handle)
 import System.Console.ANSI
 import Tldr.Types (ConsoleSetting(..))
+import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 
 defConsoleSetting :: ConsoleSetting
 defConsoleSetting =

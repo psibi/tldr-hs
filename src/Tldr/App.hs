@@ -5,24 +5,15 @@ module Tldr.App
   ( appMain
   ) where
 
-import Control.Monad
 import Data.List (intercalate)
 import Data.Semigroup ((<>))
-import Tldr.App.Constant
 import Data.Version (showVersion)
-import System.IO (stdout, stderr, hPutStrLn)
 import Options.Applicative
 import Paths_tldr (version)
-import System.Directory
-import System.Environment (getArgs, lookupEnv)
-import System.Exit (exitFailure)
-import System.FilePath
-import System.Process.Typed
-import Data.Char (toLower)
-import Tldr
+import System.Environment (getArgs)
+import Tldr.App.Constant (platformDirs)
 import Tldr.App.Handler
 import Tldr.Types
-
 
 programOptions :: Parser TldrOpts
 programOptions =
@@ -77,7 +68,6 @@ tldrParserInfo =
       infoOption
         (showVersion version)
         (long "version" <> short 'v' <> help "Show version")
-
 
 appMain :: IO ()
 appMain = do
