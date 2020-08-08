@@ -45,7 +45,7 @@ toSGR cons =
   ]
 
 renderNode :: NodeType -> Handle -> IO ()
-renderNode (TEXT txt) handle = TIO.hPutStrLn handle txt
+renderNode (TEXT txt) handle = TIO.hPutStrLn handle (txt <> "\n")
 renderNode (HTML_BLOCK txt) handle = TIO.hPutStrLn handle txt
 renderNode (CODE_BLOCK _ txt) handle = TIO.hPutStrLn handle txt
 renderNode (HTML_INLINE txt) handle = TIO.hPutStrLn handle txt
@@ -71,6 +71,7 @@ handleSubsetNodeType (CODE txt) = txt
 handleSubsetNodeType _ = mempty
 
 handleSubsetNode :: Node -> Text
+handleSubsetNode (Node _ SOFTBREAK _) = "\n"
 handleSubsetNode (Node _ ntype xs) =
   handleSubsetNodeType ntype <> T.concat (Prelude.map handleSubsetNode xs)
 
