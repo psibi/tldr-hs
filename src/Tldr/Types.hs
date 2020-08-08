@@ -15,7 +15,7 @@ data ConsoleSetting =
     , consoleIntensity :: ConsoleIntensity
     }
 
-data TldrOpts = TldrOpts
+newtype TldrOpts = TldrOpts
   { tldrAction :: TldrCommand
   } deriving (Show)
 

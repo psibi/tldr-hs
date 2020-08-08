@@ -29,8 +29,7 @@ import System.Directory
   , doesFileExist
   , getXdgDirectory
   )
-import System.Environment (getExecutablePath)
-import System.Environment (lookupEnv)
+import System.Environment (lookupEnv, getExecutablePath)
 import System.Exit (exitFailure)
 import System.FilePath ((<.>), (</>))
 import System.IO (hPutStrLn, stderr, stdout)
@@ -44,7 +43,7 @@ handleAboutFlag = do
   path <- getExecutablePath
   let content =
         unlines
-          [ path <> " v" <> (showVersion version)
+          [ path <> " v" <> showVersion version
           , "Copyright (C) 2017 Sibi Prabakaran"
           , "Source available at https://github.com/psibi/tldr-hs"
           ]
@@ -63,23 +62,23 @@ englishViewOptions :: ViewOptions -> ViewOptions
 englishViewOptions xs = xs { languageOption = Just "en_US.utf8" }
 
 handleTldrOpts :: TldrOpts -> IO ()
-handleTldrOpts opts@TldrOpts {..} = do
+handleTldrOpts opts@TldrOpts {..} =
   case tldrAction of
     UpdateIndex -> updateTldrPages
     About -> handleAboutFlag
     ViewPage voptions pages -> do
       let npage = intercalate "-" pages
       locale <-
-        case (languageOption voptions) of
+        case languageOption voptions of
           Nothing -> retriveLocale
           Just lg -> pure $ computeLocale (Just lg)
       fname <- getPagePath locale npage (getCheckDirs voptions)
       case fname of
         Just path -> renderPage path stdout
-        Nothing -> do
+        Nothing ->
           if checkLocale locale
             then do
-              hPutStrLn stderr ("No tldr entry for " <> (intercalate " " pages))
+              hPutStrLn stderr ("No tldr entry for " <> unwords pages)
               exitFailure
             else handleTldrOpts
                    (opts
@@ -92,18 +91,17 @@ updateTldrPages = do
   dataDir <- getXdgDirectory XdgData tldrDirName
   let repoDir = dataDir </> "tldr"
   repoExists <- doesDirectoryExist repoDir
-  case repoExists of
-    True ->
-      runProcess_ $
-      setWorkingDir (repoDir) $ proc "git" ["pull", "origin", "master"]
-    False -> initializeTldrPages
+  if repoExists
+    then runProcess_ $
+         setWorkingDir repoDir $ proc "git" ["pull", "origin", "master"]
+    else initializeTldrPages
 
 computeLocale :: Maybe String -> Locale
 computeLocale lang = case map toLower <$> lang of
                        Nothing -> Missing
                        Just ('e':'n':_) -> English
-                       Just (a:b:'_':_) -> Other (a:b:[])
-                       Just (a:b:c:'_':_) -> Other (a:b:c:[])
+                       Just (a:b:'_':_) -> Other [a,b]
+                       Just (a:b:c:'_':_) -> Other [a,b,c]
                        Just other -> Unknown other
 
 getPagePath :: Locale -> String -> [String] -> IO (Maybe FilePath)

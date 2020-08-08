@@ -1,5 +1,4 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE RecordWildCards #-}
 
 module Tldr.App
   ( appMain
@@ -14,10 +13,11 @@ import System.Environment (getArgs)
 import Tldr.App.Constant (platformDirs)
 import Tldr.App.Handler
 import Tldr.Types
+import Control.Monad (void)
 
 programOptions :: Parser TldrOpts
 programOptions =
-  (TldrOpts <$> (updateIndexCommand <|> viewPageCommand <|> aboutFlag))
+  TldrOpts <$> (updateIndexCommand <|> viewPageCommand <|> aboutFlag)
 
 updateIndexCommand :: Parser TldrCommand
 updateIndexCommand =
@@ -54,7 +54,7 @@ languageFlag =
     (strOption
        (long "language" <> short 'L' <> metavar "LOCALE" <>
         help
-          ("Preferred language for the page returned")))
+          "Preferred language for the page returned"))
 
 tldrParserInfo :: ParserInfo TldrOpts
 tldrParserInfo =
@@ -73,6 +73,6 @@ appMain :: IO ()
 appMain = do
   args <- getArgs
   case execParserPure (prefs showHelpOnEmpty) tldrParserInfo args of
-    failOpts@(Failure _) -> handleParseResult failOpts >> return ()
+    failOpts@(Failure _) -> void $ handleParseResult failOpts
     Success opts -> handleTldrOpts opts
-    compOpts@(CompletionInvoked _) -> handleParseResult compOpts >> return ()
+    compOpts@(CompletionInvoked _) -> void $ handleParseResult compOpts
