@@ -1,3 +1,8 @@
+# 0.8.0
+
+* Split the library into more parts.
+* Fix [multiple line bugs](https://github.com/psibi/tldr-hs/issues/26 "multiple line bugs")
+
 # 0.7.1
 
 * Client gives non zero exit status for non-existent pages.

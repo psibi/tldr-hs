@@ -14,21 +14,11 @@ module Tldr
 import CMark
 import Data.Monoid ((<>))
 import Data.Text hiding (cons)
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import GHC.IO.Handle (Handle)
 import System.Console.ANSI
-
-data ConsoleSetting =
-  ConsoleSetting
-    { italic :: Bool
-    , underline :: Underlining
-    , blink :: BlinkSpeed
-    , fgIntensity :: ColorIntensity
-    , fgColor :: Color
-    , bgIntensity :: ColorIntensity
-    , consoleIntensity :: ConsoleIntensity
-    }
+import Tldr.Types (ConsoleSetting(..))
+import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 
 defConsoleSetting :: ConsoleSetting
 defConsoleSetting =
@@ -55,7 +45,7 @@ toSGR cons =
   ]
 
 renderNode :: NodeType -> Handle -> IO ()
-renderNode (TEXT txt) handle = TIO.hPutStrLn handle txt
+renderNode (TEXT txt) handle = TIO.hPutStrLn handle (txt <> "\n")
 renderNode (HTML_BLOCK txt) handle = TIO.hPutStrLn handle txt
 renderNode (CODE_BLOCK _ txt) handle = TIO.hPutStrLn handle txt
 renderNode (HTML_INLINE txt) handle = TIO.hPutStrLn handle txt
@@ -81,6 +71,7 @@ handleSubsetNodeType (CODE txt) = txt
 handleSubsetNodeType _ = mempty
 
 handleSubsetNode :: Node -> Text
+handleSubsetNode (Node _ SOFTBREAK _) = "\n"
 handleSubsetNode (Node _ ntype xs) =
   handleSubsetNodeType ntype <> T.concat (Prelude.map handleSubsetNode xs)
 

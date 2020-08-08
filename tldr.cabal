@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 10ec649ff467c4fa6cedd898599125c78e4b7c56269fac74fe81112e0fec75f9
+-- hash: d3d3e0809356a76adc1e0a1bd557538b15e67f7e73377aaa2bf9dd91d3f831e9
 
 name:           tldr
 version:        0.7.1
@@ -42,6 +42,10 @@ flag static
 library
   exposed-modules:
       Tldr
+      Tldr.App
+      Tldr.App.Constant
+      Tldr.App.Handler
+      Tldr.Types
   other-modules:
       Paths_tldr
   hs-source-dirs:
@@ -51,7 +55,13 @@ library
     , base >=4.7 && <5
     , bytestring
     , cmark
+    , containers
+    , directory
+    , filepath
+    , optparse-applicative
+    , semigroups
     , text
+    , typed-process
   default-language: Haskell2010
 
 executable tldr
@@ -62,13 +72,7 @@ executable tldr
       app
   build-depends:
       base
-    , containers
-    , directory
-    , filepath
-    , optparse-applicative
-    , semigroups
     , tldr
-    , typed-process
   if flag(static) && os(linux)
     ghc-options: -rtsopts -threaded -optc-Os -optl=-pthread -optl=-static -fPIC
     ld-options: -static

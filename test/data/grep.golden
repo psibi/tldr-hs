@@ -1,5 +1,7 @@
 grep
-Matches patterns in input text.Supports simple patterns and regular expressions.
+
+Matches patterns in input text.
+Supports simple patterns and regular expressions.
 
  - Search for an exact string:
    grep {{search_string}} {{path/to/file}}
