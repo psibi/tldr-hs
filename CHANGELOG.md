@@ -1,3 +1,7 @@
+# 0.8.1
+
+* When pages are updated, the client now shows the download location.
+
 # 0.8.0
 
 * Split the library into more parts.
