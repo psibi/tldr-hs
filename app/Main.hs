@@ -1,6 +1,6 @@
 module Main where
 
-import Tldr.App (appMain)
+import           Tldr.App                       ( appMain )
 
 main :: IO ()
 main = appMain

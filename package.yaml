@@ -1,5 +1,5 @@
 name: tldr
-version: '0.8.0'
+version: '0.8.1'
 synopsis: Haskell tldr client
 description: |
   Haskell tldr client with support for viewing tldr pages. Has offline
@@ -34,10 +34,14 @@ library:
   - optparse-applicative
   - directory
   - filepath
-  - typed-process
   - semigroups
   - containers
+  - http-conduit
+  - zip-archive
 
+ghc-options:
+  - -Wall
+  - -O2
 
 executables:
   tldr:

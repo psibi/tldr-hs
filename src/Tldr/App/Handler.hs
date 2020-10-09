@@ -1,5 +1,6 @@
-{-#LANGUAGE RecordWildCards#-}
-{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE BangPatterns    #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Tldr.App.Handler
   ( handleAboutFlag
@@ -7,25 +8,24 @@ module Tldr.App.Handler
   , checkLocale
   , englishViewOptions
   , getCheckDirs
-  , initializeTldrPages
   , pageExists
   , getPagePath
   , updateTldrPages
   , handleTldrOpts
   ) where
 
-import Control.Monad (unless)
 import Data.Char (toLower)
 import Data.List (intercalate)
 import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import Data.Version (showVersion)
+
 import Options.Applicative
 import Paths_tldr (version)
 import System.Directory
   ( XdgDirectory(..)
-  , createDirectoryIfMissing
-  , doesDirectoryExist
+  , createDirectory
+  , removePathForcibly
   , doesFileExist
   , getXdgDirectory
   )
@@ -33,7 +33,9 @@ import System.Environment (lookupEnv, getExecutablePath)
 import System.Exit (exitFailure)
 import System.FilePath ((<.>), (</>))
 import System.IO (hPutStrLn, stderr, stdout)
-import System.Process.Typed
+import Network.HTTP.Simple
+import Codec.Archive.Zip
+
 import Tldr
 import Tldr.App.Constant
 import Tldr.Types
@@ -89,14 +91,12 @@ handleTldrOpts opts@TldrOpts {..} =
 updateTldrPages :: IO ()
 updateTldrPages = do
   dataDir <- getXdgDirectory XdgData tldrDirName
-  let repoDir = dataDir </> "tldr"
-  repoExists <- doesDirectoryExist repoDir
-  if repoExists
-    then do
-         putStrLn $ "Downloading tldr pages to " ++ repoDir
-         runProcess_ $
-            setWorkingDir repoDir $ proc "git" ["pull", "origin", "master"]
-    else initializeTldrPages
+  removePathForcibly dataDir
+  createDirectory dataDir
+  putStrLn $ "Downloading tldr pages to " ++ dataDir
+  response <- httpLBS $ parseRequest_ pagesUrl
+  let zipArchive = toArchive $ getResponseBody response
+  extractFilesFromArchive [OptDestination dataDir] zipArchive
 
 computeLocale :: Maybe String -> Locale
 computeLocale lang = case map toLower <$> lang of
@@ -114,7 +114,7 @@ getPagePath locale page pDirs = do
                         Other xs -> "pages." <> xs
                         Unknown xs -> "pages." <> xs
                         Missing -> "pages"
-      pageDir = dataDir </> "tldr" </> currentLocale
+      pageDir = dataDir </> currentLocale
       paths = map (\x -> pageDir </> x </> page <.> "md") pDirs
   foldr1 (<|>) <$> mapM pageExists paths
 
@@ -125,22 +125,6 @@ pageExists fname = do
     then return $ Just fname
     else return Nothing
 
-tldrInitialized :: IO Bool
-tldrInitialized = do
-  dataDir <- getXdgDirectory XdgData tldrDirName
-  let dir2 = dataDir </> "tldr"
-      pages = dataDir </> "tldr" </> "pages"
-  exists <- mapM doesDirectoryExist [dataDir, dir2, pages]
-  return $ all (== True) exists
-
-initializeTldrPages :: IO ()
-initializeTldrPages = do
-  initialized <- tldrInitialized
-  unless initialized $ do
-    dataDir <- getXdgDirectory XdgData tldrDirName
-    createDirectoryIfMissing False dataDir
-    putStrLn $ "Initialising tldr page storage in " ++ dataDir
-    runProcess_ $ setWorkingDir dataDir $ proc "git" ["clone", repoHttpsUrl]
 
 getCheckDirs :: ViewOptions -> [String]
 getCheckDirs voptions =

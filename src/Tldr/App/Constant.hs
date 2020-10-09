@@ -3,8 +3,8 @@ module Tldr.App.Constant where
 tldrDirName :: String
 tldrDirName = "tldr"
 
-repoHttpsUrl :: String
-repoHttpsUrl = "https://github.com/tldr-pages/tldr.git"
+pagesUrl :: String
+pagesUrl = "https://tldr.sh/assets/tldr.zip"
 
 checkDirs :: [String]
 checkDirs = "common" : platformDirs

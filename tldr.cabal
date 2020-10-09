@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6227f2af49b8d2a6bce7e1b2f3b3dd1df2bfe9922b13aaa8e10824c73f2d1b51
+-- hash: 21691ba2cc19cdb8ae6d8a3bd0e84803e28b8866530a0da9fe44e6187df4fec1
 
 name:           tldr
-version:        0.8.0
+version:        0.8.1
 synopsis:       Haskell tldr client
 description:    Haskell tldr client with support for viewing tldr pages. Has offline
                 cache for accessing pages. Visit https://tldr.sh for more details.
@@ -50,6 +50,7 @@ library
       Paths_tldr
   hs-source-dirs:
       src
+  ghc-options: -Wall
   build-depends:
       ansi-terminal
     , base >=4.7 && <5
@@ -58,10 +59,11 @@ library
     , containers
     , directory
     , filepath
+    , http-conduit
     , optparse-applicative
     , semigroups
     , text
-    , typed-process
+    , zip-archive
   default-language: Haskell2010
 
 executable tldr
@@ -70,6 +72,7 @@ executable tldr
       Paths_tldr
   hs-source-dirs:
       app
+  ghc-options: -Wall
   build-depends:
       base
     , tldr
@@ -87,7 +90,7 @@ test-suite tldr-test
       Paths_tldr
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base
     , tasty
