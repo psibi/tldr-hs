@@ -92,8 +92,10 @@ updateTldrPages = do
   let repoDir = dataDir </> "tldr"
   repoExists <- doesDirectoryExist repoDir
   if repoExists
-    then runProcess_ $
-         setWorkingDir repoDir $ proc "git" ["pull", "origin", "master"]
+    then do
+         putStrLn $ "Downloading tldr pages to " ++ repoDir
+         runProcess_ $
+            setWorkingDir repoDir $ proc "git" ["pull", "origin", "master"]
     else initializeTldrPages
 
 computeLocale :: Maybe String -> Locale
@@ -137,6 +139,7 @@ initializeTldrPages = do
   unless initialized $ do
     dataDir <- getXdgDirectory XdgData tldrDirName
     createDirectoryIfMissing False dataDir
+    putStrLn $ "Initialising tldr page storage in " ++ dataDir
     runProcess_ $ setWorkingDir dataDir $ proc "git" ["clone", repoHttpsUrl]
 
 getCheckDirs :: ViewOptions -> [String]
