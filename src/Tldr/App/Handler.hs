@@ -1,6 +1,5 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE BangPatterns    #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module Tldr.App.Handler
   ( handleAboutFlag
