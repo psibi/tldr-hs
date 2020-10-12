@@ -38,6 +38,7 @@ library:
   - containers
   - http-conduit
   - zip-archive
+  - time
 
 ghc-options:
   - -Wall

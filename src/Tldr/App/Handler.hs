@@ -18,6 +18,9 @@ import Data.List (intercalate)
 import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import Data.Version (showVersion)
+import Data.Time.Clock
+
+import Control.Monad (when)
 
 import Options.Applicative
 import Paths_tldr (version)
@@ -26,6 +29,8 @@ import System.Directory
   , createDirectory
   , removePathForcibly
   , doesFileExist
+  , doesDirectoryExist
+  , getModificationTime
   , getXdgDirectory
   )
 import System.Environment (lookupEnv, getExecutablePath)
@@ -68,6 +73,8 @@ handleTldrOpts opts@TldrOpts {..} =
     UpdateIndex -> updateTldrPages
     About -> handleAboutFlag
     ViewPage voptions pages -> do
+      performUpdate <- updateNecessary
+      when performUpdate updateTldrPages 
       let npage = intercalate "-" pages
       locale <-
         case languageOption voptions of
@@ -86,6 +93,21 @@ handleTldrOpts opts@TldrOpts {..} =
                       { tldrAction =
                           ViewPage (englishViewOptions voptions) pages
                       })
+
+-- We update if the data directory does not exist.
+-- We also update if the cached pages version is older than 7 days.
+-- TODO: Make the auto-update interval configurable.
+-- TODO: Add command line option to skip auto update.
+updateNecessary :: IO Bool
+updateNecessary = do
+  dataDir <- getXdgDirectory XdgData tldrDirName
+  dataDirExists <- doesDirectoryExist dataDir
+  if not dataDirExists 
+    then return True
+    else do
+      lastCachedTime <- getModificationTime dataDir
+      currentTime <- getCurrentTime
+      return $ currentTime `diffUTCTime` lastCachedTime > 7 * nominalDay
 
 updateTldrPages :: IO ()
 updateTldrPages = do
