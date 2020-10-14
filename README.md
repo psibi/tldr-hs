@@ -65,7 +65,7 @@ Since the number of available tldr pages rises quickly, it is recommended to reg
 Such an update can be run manually with `tldr --update`. 
 Users of this client can enable automatic updates by running it with the option `--auto-update-interval DAYS` specified.
 The client will then check whether the cached version of the tldr pages is older than `DAYS` days and perform an update in that case.
-To enable this functionality permanemtly, users can put the line `alias tldr="tldr --auto-update-interval DAYS"` in their shell configuration file (e.g. `.bashrc`, `.zshrc`) with the desired update interval specified.
+To enable this functionality permanently, users can put the line `alias tldr="tldr --auto-update-interval DAYS"` in their shell configuration file (e.g. `.bashrc`, `.zshrc`) with the desired update interval specified.
 
 ## Snapshot
 
