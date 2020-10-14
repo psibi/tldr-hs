@@ -38,6 +38,9 @@ Available options:
   -L,--language LOCALE     Preferred language for the page returned
   COMMAND                  name of the command
   -a,--about               About this program
+  --auto-update-interval DAYS
+                           Perform an automatic update if the cache is older
+                           than DAYS
 ```
 
 Or a much better example of the usage:
@@ -45,7 +48,7 @@ Or a much better example of the usage:
 ``` shellsession
 $ tldr tldr
 tldr
-Simplified man pages.More information: https://tldr.sh.
+Simplified man pages. More information: https://tldr.sh.
 
  - Get typical usages of a command (hint: this is how you got here!):
    tldr {{command}}
@@ -56,6 +59,13 @@ Simplified man pages.More information: https://tldr.sh.
  - Get help for a git subcommand:
    tldr {{git checkout}}
 ```
+
+On the first run, this programme caches all available tldr pages. 
+Since the number of available tldr pages rises quickly, it is recommended to regularly update the cache. 
+Such an update can be run manually with `tldr --update`. 
+Users of this client can enable automatic updates by running it with the option `--auto-update-interval DAYS` specified.
+The client will then check whether the cached version of the tldr pages is older than `DAYS` days and perform an update in that case.
+To enable this functionality permanemtly, users can put the line `alias tldr="tldr --auto-update-interval DAYS"` in their shell configuration file (e.g. `.bashrc`, `.zshrc`) with the desired update interval specified.
 
 ## Snapshot
 
