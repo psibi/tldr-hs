@@ -17,13 +17,21 @@ import Control.Monad (void)
 
 programOptions :: Parser TldrOpts
 programOptions =
-  TldrOpts <$> (updateIndexCommand <|> viewPageCommand <|> aboutFlag)
+  TldrOpts <$> (updateIndexCommand <|> viewPageCommand <|> aboutFlag) <*> autoUpdateIntervalOpt
 
 updateIndexCommand :: Parser TldrCommand
 updateIndexCommand =
   flag'
     UpdateIndex
     (long "update" <> short 'u' <> help "Update offline cache of tldr pages")
+
+autoUpdateIntervalOpt :: Parser (Maybe Int)
+autoUpdateIntervalOpt =
+  optional
+    (option auto
+       (long "auto-update-interval" <> metavar "DAYS" <>
+        help
+          "Perform an automatic update if the cache is older than DAYS"))
 
 aboutFlag :: Parser TldrCommand
 aboutFlag = flag' About (long "about" <> short 'a' <> help "About this program")

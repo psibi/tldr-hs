@@ -15,8 +15,9 @@ data ConsoleSetting =
     , consoleIntensity :: ConsoleIntensity
     }
 
-newtype TldrOpts = TldrOpts
+data TldrOpts = TldrOpts
   { tldrAction :: TldrCommand
+  , autoUpdateInterval :: Maybe Int
   } deriving (Show)
 
 data TldrCommand

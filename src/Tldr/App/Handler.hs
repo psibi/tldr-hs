@@ -73,8 +73,8 @@ handleTldrOpts opts@TldrOpts {..} =
     UpdateIndex -> updateTldrPages
     About -> handleAboutFlag
     ViewPage voptions pages -> do
-      performUpdate <- updateNecessary
-      when performUpdate updateTldrPages 
+      shouldPerformUpdate <- updateNecessary opts
+      when shouldPerformUpdate updateTldrPages 
       let npage = intercalate "-" pages
       locale <-
         case languageOption voptions of
@@ -94,12 +94,8 @@ handleTldrOpts opts@TldrOpts {..} =
                           ViewPage (englishViewOptions voptions) pages
                       })
 
--- We update if the data directory does not exist.
--- We also update if the cached pages version is older than 7 days.
--- TODO: Make the auto-update interval configurable.
--- TODO: Add command line option to skip auto update.
-updateNecessary :: IO Bool
-updateNecessary = do
+updateNecessary :: TldrOpts -> IO Bool
+updateNecessary TldrOpts{..} = do
   dataDir <- getXdgDirectory XdgData tldrDirName
   dataDirExists <- doesDirectoryExist dataDir
   if not dataDirExists 
@@ -107,7 +103,10 @@ updateNecessary = do
     else do
       lastCachedTime <- getModificationTime dataDir
       currentTime <- getCurrentTime
-      return $ currentTime `diffUTCTime` lastCachedTime > 7 * nominalDay
+      let diffExceedsLimit limit 
+            = currentTime `diffUTCTime` lastCachedTime 
+              > fromIntegral limit * nominalDay
+      return $ maybe False diffExceedsLimit autoUpdateInterval
 
 updateTldrPages :: IO ()
 updateTldrPages = do
