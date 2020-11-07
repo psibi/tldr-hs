@@ -60,7 +60,7 @@ Simplified man pages. More information: https://tldr.sh.
    tldr {{git checkout}}
 ```
 
-On the first run, this programme caches all available tldr pages. 
+On the first run, this program caches all available tldr pages. 
 Since the number of available tldr pages rises quickly, it is recommended to regularly update the cache. 
 Such an update can be run manually with `tldr --update`. 
 Users of this client can enable automatic updates by running it with the option `--auto-update-interval DAYS` specified.
