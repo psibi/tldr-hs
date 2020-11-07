@@ -19,9 +19,7 @@ import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import Data.Version (showVersion)
 import Data.Time.Clock
-
 import Control.Monad (when)
-
 import Options.Applicative
 import Paths_tldr (version)
 import System.Directory
@@ -39,7 +37,6 @@ import System.FilePath ((<.>), (</>))
 import System.IO (hPutStrLn, stderr, stdout)
 import Network.HTTP.Simple
 import Codec.Archive.Zip
-
 import Tldr
 import Tldr.App.Constant
 import Tldr.Types
