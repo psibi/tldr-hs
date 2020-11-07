@@ -1,4 +1,4 @@
-# 0.8.1
+# 0.9.0
 
 * When pages are updated, the client now shows the download location.
 * Add optional auto-update functionality (`--auto-update-interval`)
