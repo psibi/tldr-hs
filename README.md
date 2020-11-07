@@ -8,6 +8,18 @@
 
 Haskell client for tldr
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [tldr](#tldr)
+    - [Installation](#installation)
+    - [Usage](#usage)
+    - [Offline caching](#offline-caching)
+    - [Snapshot](#snapshot)
+
+<!-- markdown-toc end -->
+
+
 ## Installation
 
 See Github releases: https://github.com/psibi/tldr-hs/releases
@@ -60,12 +72,23 @@ Simplified man pages. More information: https://tldr.sh.
    tldr {{git checkout}}
 ```
 
-On the first run, this program caches all available tldr pages. 
-Since the number of available tldr pages rises quickly, it is recommended to regularly update the cache. 
-Such an update can be run manually with `tldr --update`. 
-Users of this client can enable automatic updates by running it with the option `--auto-update-interval DAYS` specified.
-The client will then check whether the cached version of the tldr pages is older than `DAYS` days and perform an update in that case.
-To enable this functionality permanently, users can put the line `alias tldr="tldr --auto-update-interval DAYS"` in their shell configuration file (e.g. `.bashrc`, `.zshrc`) with the desired update interval specified.
+## Offline caching
+
+On the first run, this program caches all available tldr pages. Since
+the number of available tldr pages rises quickly, it is recommended to
+regularly update the cache.  Such an update can be run manually with:
+
+``` shellsession
+$ tldr --update
+```
+
+Users of this client can enable automatic updates by running it with
+the option `--auto-update-interval DAYS` specified.  The client will
+then check whether the cached version of the tldr pages is older than
+`DAYS` days and perform an update in that case.  To enable this
+functionality permanently, users can put the line `alias tldr="tldr
+--auto-update-interval DAYS"` in their shell configuration file
+(e.g. `.bashrc`, `.zshrc`) with the desired update interval specified.
 
 ## Snapshot
 
