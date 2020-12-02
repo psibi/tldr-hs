@@ -9,7 +9,7 @@ trigger:
 jobs:
 - template: ./.azure/azure-linux-musl.yml
   parameters:
-    name: Musl Linux
+    name: Musl_Linux
     vmImage: ubuntu-latest
     os: linux
 
