@@ -50,7 +50,7 @@ platformFlag =
     (strOption
        (long "platform" <> short 'p' <> metavar "PLATFORM" <>
         help
-          ("Prioritize specfic platform while searching. Valid values include " <>
+          ("Prioritize a specific platform while searching. Valid values include " <>
            platformHelpValue)))
   where
     platformHelpValue :: String
