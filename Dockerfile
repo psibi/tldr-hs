@@ -1,4 +1,4 @@
-FROM fpco/alpine-haskell-stack:8.6.5
+FROM fpco/alpine-haskell-stack:8.10.4
 
 COPY . /app
 
