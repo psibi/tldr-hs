@@ -1,13 +1,13 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8f1a3267eb79f7615c0d4cc731807ebde3d23a3dea7fc605e0dd77b39c458d9e
+-- hash: 86d07459291589175c3f2f48f7b55186411b1b57c3a9b1e89abc1df51c9c7f38
 
 name:           tldr
-version:        0.9.0
+version:        0.9.1
 synopsis:       Haskell tldr client
 description:    Haskell tldr client with support for viewing tldr pages. Has offline
                 cache for accessing pages. Visit https://tldr.sh for more details.

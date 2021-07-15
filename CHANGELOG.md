@@ -1,3 +1,8 @@
+# 0.9.1
+
+* When the [`NO_COLOR`](https://no-color.org/) environment variable is set, the client will not color the output.
+* Added `--[no-]color` options which enable/disable output coloring (overrides `NO_COLOR`).
+
 # 0.9.0
 
 * When pages are updated, the client now shows the download location.
