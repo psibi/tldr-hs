@@ -1,4 +1,5 @@
 import Tldr
+import Tldr.Types (ColorSetting(..))
 import Test.Tasty
 import Test.Tasty.Golden (goldenVsFile)
 import System.IO (withBinaryFile, IOMode(..))
@@ -12,7 +13,7 @@ goldenTests = testGroup "Golden tests" [gtests]
 
 renderPageToFile :: FilePath -> FilePath -> IO ()
 renderPageToFile mdfile opfile = do
-  withBinaryFile opfile WriteMode (\handle -> renderPage mdfile handle)
+  withBinaryFile opfile WriteMode (\handle -> renderPage mdfile handle UseColor)
 
 -- For adding new command, you need to add:
 -- A new ".md" file for that command

@@ -15,6 +15,7 @@ module Tldr.App.Handler
 
 import Data.Char (toLower)
 import Data.List (intercalate)
+import Data.Maybe (fromMaybe)
 import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import Data.Version (showVersion)
@@ -79,7 +80,10 @@ handleTldrOpts opts@TldrOpts {..} =
           Just lg -> pure $ computeLocale (Just lg)
       fname <- getPagePath locale npage (getCheckDirs voptions)
       case fname of
-        Just path -> renderPage path stdout
+        Just path -> do
+          defColor <- getNoColorEnv
+          let color = fromMaybe defColor colorSetting 
+          renderPage path stdout color
         Nothing ->
           if checkLocale locale
             then do
@@ -149,6 +153,12 @@ getCheckDirs voptions =
     Nothing -> checkDirs
     Just platform -> nubOrd $ ["common", platform] <> checkDirs
 
+getNoColorEnv :: IO ColorSetting
+getNoColorEnv = do
+  noColorSet <- lookupEnv "NO_COLOR"
+  return $ case noColorSet of
+    Just _ -> NoColor
+    Nothing -> UseColor
 
 -- | Strip out duplicates
 nubOrd :: Ord a => [a] -> [a]
