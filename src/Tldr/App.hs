@@ -17,7 +17,7 @@ import Control.Monad (void)
 
 programOptions :: Parser TldrOpts
 programOptions =
-  TldrOpts <$> (updateIndexCommand <|> viewPageCommand <|> aboutFlag) <*> autoUpdateIntervalOpt
+  TldrOpts <$> (updateIndexCommand <|> viewPageCommand <|> aboutFlag) <*> autoUpdateIntervalOpt <*> colorFlags
 
 updateIndexCommand :: Parser TldrCommand
 updateIndexCommand =
@@ -63,6 +63,25 @@ languageFlag =
        (long "language" <> short 'L' <> metavar "LOCALE" <>
         help
           "Preferred language for the page returned"))
+
+useColorFlag :: Parser (Maybe ColorSetting)
+useColorFlag =
+  optional
+    (flag' UseColor
+        (long "color" <>
+        help
+          "Force colored output, overriding the NO_COLOR environment variable"))
+
+noColorFlag :: Parser (Maybe ColorSetting)
+noColorFlag =
+  optional
+    (flag' NoColor
+        (long "no-color" <>
+        help
+          "Disable colored output")) 
+
+colorFlags :: Parser (Maybe ColorSetting)
+colorFlags = useColorFlag <|> noColorFlag
 
 tldrParserInfo :: ParserInfo TldrOpts
 tldrParserInfo =

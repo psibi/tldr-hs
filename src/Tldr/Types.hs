@@ -4,6 +4,9 @@ import System.Console.ANSI
 
 data Locale = English | Missing | Other String | Unknown String
 
+data ColorSetting = NoColor | UseColor 
+  deriving (Eq, Show, Ord, Enum, Bounded)
+
 data ConsoleSetting =
   ConsoleSetting
     { italic :: Bool
@@ -18,6 +21,7 @@ data ConsoleSetting =
 data TldrOpts = TldrOpts
   { tldrAction :: TldrCommand
   , autoUpdateInterval :: Maybe Int
+  , colorSetting :: Maybe ColorSetting
   } deriving (Show)
 
 data TldrCommand
