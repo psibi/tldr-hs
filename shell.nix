@@ -1,7 +1,6 @@
-with import (fetchTarball
-  "https://github.com/NixOS/nixpkgs/archive/refs/tags/21.05.tar.gz") { };
+with import <nixpkgs> { };
 stdenv.mkDerivation {
-  name = "xmonad";
+  name = "tldr-hs";
   buildInputs = [
     ghc
     zlib
