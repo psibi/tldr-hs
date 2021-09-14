@@ -4,7 +4,7 @@ import System.Console.ANSI
 
 data Locale = English | Missing | Other String | Unknown String
 
-data ColorSetting = NoColor | UseColor 
+data ColorSetting = NoColor | UseColor
   deriving (Eq, Show, Ord, Enum, Bounded)
 
 data ConsoleSetting =

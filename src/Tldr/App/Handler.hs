@@ -72,7 +72,7 @@ handleTldrOpts opts@TldrOpts {..} =
     About -> handleAboutFlag
     ViewPage voptions pages -> do
       shouldPerformUpdate <- updateNecessary opts
-      when shouldPerformUpdate updateTldrPages 
+      when shouldPerformUpdate updateTldrPages
       let npage = intercalate "-" pages
       locale <-
         case languageOption voptions of
@@ -82,7 +82,7 @@ handleTldrOpts opts@TldrOpts {..} =
       case fname of
         Just path -> do
           defColor <- getNoColorEnv
-          let color = fromMaybe defColor colorSetting 
+          let color = fromMaybe defColor colorSetting
           renderPage path stdout color
         Nothing ->
           if checkLocale locale
@@ -99,13 +99,13 @@ updateNecessary :: TldrOpts -> IO Bool
 updateNecessary TldrOpts{..} = do
   dataDir <- getXdgDirectory XdgData tldrDirName
   dataDirExists <- doesDirectoryExist dataDir
-  if not dataDirExists 
+  if not dataDirExists
     then return True
     else do
       lastCachedTime <- getModificationTime dataDir
       currentTime <- getCurrentTime
-      let diffExceedsLimit limit 
-            = currentTime `diffUTCTime` lastCachedTime 
+      let diffExceedsLimit limit
+            = currentTime `diffUTCTime` lastCachedTime
               > fromIntegral limit * nominalDay
       return $ maybe False diffExceedsLimit autoUpdateInterval
 

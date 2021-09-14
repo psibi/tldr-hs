@@ -78,7 +78,7 @@ noColorFlag =
     (flag' NoColor
         (long "no-color" <>
         help
-          "Disable colored output")) 
+          "Disable colored output"))
 
 colorFlags :: Parser (Maybe ColorSetting)
 colorFlags = useColorFlag <|> noColorFlag
