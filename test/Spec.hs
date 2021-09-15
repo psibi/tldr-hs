@@ -28,7 +28,7 @@ commandTest str = goldenVsFile (str <> " test") (golden str) (output str) (rende
       md cmd = prefix <> cmd <> ".md"
 
 gtests :: TestTree
-gtests = testGroup "(render test)" 
+gtests = testGroup "(render test)"
          [
           commandTest "ls"
          , commandTest "ps"
