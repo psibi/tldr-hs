@@ -45,6 +45,7 @@ library
       Tldr.App
       Tldr.App.Constant
       Tldr.App.Handler
+      Tldr.Parser
       Tldr.Types
   other-modules:
       Paths_tldr
@@ -53,6 +54,7 @@ library
   ghc-options: -Wall -O2
   build-depends:
       ansi-terminal
+    , attoparsec
     , base >=4.7 && <5
     , bytestring
     , cmark
