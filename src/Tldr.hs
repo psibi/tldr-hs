@@ -51,14 +51,19 @@ toSGR color cons = case color of
       , SetBlinkSpeed (blink cons)
       ]
 
+reset :: ColorSetting -> IO ()
+reset color = case color of
+  NoColor -> pure ()
+  UseColor -> setSGR [Reset]
+
 renderNode :: NodeType -> ColorSetting -> Handle -> IO ()
-renderNode nt@(TEXT txt) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle (txt <> "\n") >> setSGR [Reset]
-renderNode nt@(HTML_BLOCK txt) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle txt >> setSGR [Reset]
-renderNode nt@(CODE_BLOCK _ txt) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle txt >> setSGR [Reset]
-renderNode nt@(HTML_INLINE txt) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle txt >> setSGR [Reset]
+renderNode nt@(TEXT txt) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle (txt <> "\n") >> reset color
+renderNode nt@(HTML_BLOCK txt) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle txt >> reset color
+renderNode nt@(CODE_BLOCK _ txt) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle txt >> reset color
+renderNode nt@(HTML_INLINE txt) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle txt >> reset color
 renderNode (CODE txt) color handle = renderCode color txt handle
-renderNode nt@LINEBREAK color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle "" >> setSGR [Reset]
-renderNode nt@(LIST _) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle "" >> TIO.hPutStr handle " - " >> setSGR [Reset]
+renderNode nt@LINEBREAK color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle "" >> reset color
+renderNode nt@(LIST _) color handle = changeConsoleSetting color nt >> TIO.hPutStrLn handle "" >> TIO.hPutStr handle " - " >> reset color
 renderNode _ _ _ = return ()
 
 renderCode :: ColorSetting -> Text -> Handle -> IO ()
@@ -67,9 +72,9 @@ renderCode color txt handle = do
   case parseOnly codeParser txt of
     Right xs -> do
       forM_ xs $ \case
-        Left x -> changeConsoleSetting color (CODE txt) >> TIO.hPutStr handle x >> setSGR [Reset]
+        Left x -> changeConsoleSetting color (CODE txt) >> TIO.hPutStr handle x >> reset color
         Right x -> TIO.hPutStr handle x
-    Left _ -> changeConsoleSetting color (CODE txt) >> TIO.hPutStr handle txt >> setSGR [Reset]
+    Left _ -> changeConsoleSetting color (CODE txt) >> TIO.hPutStr handle txt >> reset color
   TIO.hPutStr handle ("\n")
 
 changeConsoleSetting :: ColorSetting -> NodeType -> IO ()
@@ -107,7 +112,7 @@ handleNode (Node _ ntype xs) handle color = do
     (\(Node _ ntype' ns) ->
        renderNode ntype' color handle >> mapM_ (\n -> handleNode n handle color) ns)
     xs
-  setSGR [Reset]
+  reset color
 
 parsePage :: FilePath -> IO Node
 parsePage fname = do
