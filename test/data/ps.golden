@@ -9,7 +9,7 @@ Information about running processes.
    ps auxww
 
  - Search for a process that matches a string:
-   ps aux | grep {{string}}
+   ps aux | grep string
 
  - List all processes of the current user in extra full format:
    ps --user $(id -u) -F
@@ -18,4 +18,4 @@ Information about running processes.
    ps --user $(id -u) f
 
  - Get the parent pid of a process:
-   ps -o ppid= -p {{pid}}
+   ps -o ppid= -p pid
