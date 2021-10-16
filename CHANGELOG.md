@@ -1,3 +1,7 @@
+# 0.9.2
+
+* [Apply better coloring](https://github.com/psibi/tldr-hs/pull/43 "https://github.com/psibi/tldr-hs/pull/43")
+
 # 0.9.1
 
 * When the [`NO_COLOR`](https://no-color.org/) environment variable is set, the client will not color the output.
