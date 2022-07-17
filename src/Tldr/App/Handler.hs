@@ -16,7 +16,6 @@ module Tldr.App.Handler
 import Data.Char (toLower)
 import Data.List (intercalate)
 import Data.Maybe (fromMaybe)
-import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import Data.Version (showVersion)
 import Data.Time.Clock

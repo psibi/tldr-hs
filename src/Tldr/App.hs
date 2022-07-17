@@ -5,7 +5,6 @@ module Tldr.App
   ) where
 
 import Data.List (intercalate)
-import Data.Semigroup ((<>))
 import Data.Version (showVersion)
 import Options.Applicative
 import Paths_tldr (version)
