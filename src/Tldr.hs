@@ -15,7 +15,6 @@ module Tldr
 import CMark
 import Control.Monad (forM_)
 import Data.Attoparsec.Text
-import Data.Monoid ((<>))
 import Data.Text hiding (cons)
 import GHC.IO.Handle (Handle)
 import System.Console.ANSI
@@ -68,14 +67,14 @@ renderNode _ _ _ = return ()
 
 renderCode :: ColorSetting -> Text -> Handle -> IO ()
 renderCode color txt handle = do
-  TIO.hPutStr handle ("   ")
+  TIO.hPutStr handle "   "
   case parseOnly codeParser txt of
     Right xs -> do
       forM_ xs $ \case
         Left x -> changeConsoleSetting color (CODE txt) >> TIO.hPutStr handle x >> reset color
         Right x -> TIO.hPutStr handle x
     Left _ -> changeConsoleSetting color (CODE txt) >> TIO.hPutStr handle txt >> reset color
-  TIO.hPutStr handle ("\n")
+  TIO.hPutStr handle "\n"
 
 changeConsoleSetting :: ColorSetting -> NodeType -> IO ()
 changeConsoleSetting color (HEADING _) = setSGR $ toSGR color headingSetting
