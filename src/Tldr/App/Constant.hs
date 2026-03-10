@@ -4,7 +4,7 @@ tldrDirName :: String
 tldrDirName = "tldr"
 
 pagesUrl :: String
-pagesUrl = "https://tldr.sh/assets/tldr.zip"
+pagesUrl = "https://github.com/tldr-pages/tldr/releases/latest/download/tldr.zip"
 
 checkDirs :: [String]
 checkDirs = "common" : platformDirs
