@@ -1,7 +1,4 @@
-resolver: lts-19.15
+resolver: lts-24.26
 
 packages:
 - '.'
-
-nix:
-  shell-file: shell.nix

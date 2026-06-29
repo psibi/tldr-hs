@@ -1,0 +1,30 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - uses: extractions/setup-just@v1
+        with:
+          just-version: 1.51.0
+      - name: Static Binary Generation
+        shell: bash
+        run: |
+            set -exuo pipefail
+            just copy-static-tldr
+            just test
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: tldr
+          generate_release_notes: true
