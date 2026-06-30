@@ -1,3 +1,8 @@
+# 0.9.3
+
+- Fix main URL to latest TLDR.
+- Github action support and cleanup Azure actions
+
 # 0.9.2
 
 * [Apply better coloring](https://github.com/psibi/tldr-hs/pull/43 "https://github.com/psibi/tldr-hs/pull/43")

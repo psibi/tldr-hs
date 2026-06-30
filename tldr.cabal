@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.38.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -77,12 +77,12 @@ executable tldr
   build-depends:
       base
     , tldr
+  default-language: Haskell2010
   if flag(static) && os(linux)
     ghc-options: -rtsopts -threaded -optc-Os -optl=-pthread -optl=-static -fPIC
     ld-options: -static
   else
     ghc-options: -rtsopts -threaded
-  default-language: Haskell2010
 
 test-suite tldr-test
   type: exitcode-stdio-1.0

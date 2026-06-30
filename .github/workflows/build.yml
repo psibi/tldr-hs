@@ -1,0 +1,47 @@
+name: Build
+
+on:
+    pull_request:
+    push:
+      branches:
+      - master
+
+jobs:
+  build:
+    name: CI
+    runs-on: ubuntu-latest
+    env:
+      STACK_ROOT: ${{ github.workspace }}/.stack
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v6
+        with:
+          submodules: 'true'
+      - uses: extractions/setup-just@v1
+        with:
+          just-version: 1.51.0
+      - name: Cache dependencies
+        uses: actions/cache@v6
+        if: always()
+        with:
+          path: |
+            ~/.stack
+            ${{ github.workspace }}/.stack
+          key: linux-haskell-${{ hashFiles('stack.yaml') }}
+          restore-keys: |
+            linux-haskell-
+
+      - name: Build and run tests
+        shell: bash
+        run: |
+            set -exuo pipefail
+            curl -sSL https://get.haskellstack.org/ | sh -s - -f
+            stack test --fast --no-terminal
+      - name: Static Binary check
+        shell: bash
+        run: |
+            set -exuo pipefail
+            just copy-static-tldr
+            just test
