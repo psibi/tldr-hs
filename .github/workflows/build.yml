@@ -24,6 +24,7 @@ jobs:
           just-version: 1.51.0
       - name: Cache dependencies
         uses: actions/cache@v6
+        if: always()
         with:
           path: |
             ~/.stack

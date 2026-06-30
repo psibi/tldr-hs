@@ -26,5 +26,6 @@ copy-static-tldr: build-image
 # Sanity test the binary
 test:
 	file ./tldr
+	-mkdir -p ~/.local/share/tldr
 	./tldr --update
 	./tldr ls
